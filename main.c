@@ -454,15 +454,10 @@ static jbyteArray getThumbnail(JNIEnv *env, jobject jobj, jstring jfilename)
 #endif
             goto noThumbnail;
         }
-        jboolean isCopy;
-        jbyte* thumbnailDataPtr = (*env)->GetByteArrayElements(env, byteArray, &isCopy);
-        memcpy(thumbnailDataPtr, thumbnailPointer, ImageInfo.ThumbnailSize);
+        (*env)->SetByteArrayRegion(env, byteArray, 0, ImageInfo.ThumbnailSize, thumbnailPointer);
 #ifdef SUPERDEBUG
     LOGE("thumbnail size %d\n", ImageInfo.ThumbnailSize);
 #endif
-        if (isCopy == JNI_TRUE) {
-            (*env)->ReleaseByteArrayElements(env, byteArray, thumbnailDataPtr, 0);
-        }
         (*env)->ReleaseStringUTFChars(env, jfilename, filename);
         return byteArray;
     }

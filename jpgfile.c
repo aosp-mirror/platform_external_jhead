@@ -45,13 +45,13 @@ static int Get16m(const void * Short)
 static void process_COM (const uchar * Data, int length)
 {
     int ch;
-    char Comment[MAX_COMMENT+1];
+    char Comment[MAX_COMMENT_SIZE+1];
     int nch;
     int a;
 
     nch = 0;
 
-    if (length > MAX_COMMENT) length = MAX_COMMENT; // Truncate if it won't fit in our structure.
+    if (length > MAX_COMMENT_SIZE) length = MAX_COMMENT_SIZE; // Truncate if it won't fit in our structure.
 
     for (a=2;a<length;a++){
         ch = Data[a];
@@ -72,6 +72,7 @@ static void process_COM (const uchar * Data, int length)
     }
 
     strcpy(ImageInfo.Comments,Comment);
+    ImageInfo.CommentWidchars = 0;
 }
 
  
@@ -141,22 +142,16 @@ int ReadJpegSections (FILE * infile, ReadMode_t ReadMode)
 
         CheckSectionsAllocated();
 
-        for (a=0;a<7;a++){
+        for (a=0;a<=16;a++){
             marker = fgetc(infile);
             if (marker != 0xff) break;
 
-            if (a >= 6){
+            if (a >= 16){
                 fprintf(stderr,"too many padding bytes\n");
                 return FALSE;
             }
         }
 
-        if (marker == 0xff){
-            // 0xff is legal padding, but if we get that many, something's wrong.
-            //ErrFatal("too many padding bytes!");
-            LOGE("too many padding bytes!");
-		    return FALSE;
-        }
 
         Sections[SectionsRead].Type = marker;
   
@@ -254,15 +249,24 @@ int ReadJpegSections (FILE * infile, ReadMode_t ReadMode)
                 break;
 
             case M_EXIF:
-                // Seen files from some 'U-lead' software with Vivitar scanner
-                // that uses marker 31 for non exif stuff.  Thus make sure 
-                // it says 'Exif' in the section before treating it as exif.
-                if ((ReadMode & READ_METADATA) && memcmp(Data+2, "Exif", 4) == 0){
-                    process_EXIF(Data, itemlen);
-                }else{
-                    // Discard this section.
-                    free(Sections[--SectionsRead].Data);
+                // There can be different section using the same marker.
+                if (ReadMode & READ_METADATA){
+                    if (memcmp(Data+2, "Exif", 4) == 0){
+                        process_EXIF(Data, itemlen);
+                        break;
+                    }else if (memcmp(Data+2, "http:", 5) == 0){
+                        Sections[SectionsRead-1].Type = M_XMP; // Change tag for internal purposes.
+                        if (ShowTags){
+                            printf("Image cotains XMP section, %d bytes long\n", itemlen);
+                            if (ShowTags){
+                                ShowXmp(Sections[SectionsRead-1]);
+                            }
+                        }
+                        break;
+                    }
                 }
+                // Oterwise, discard this section.
+                free(Sections[--SectionsRead].Data);
                 break;
 
             case M_IPTC:
@@ -399,9 +403,14 @@ int ReplaceThumbnail(const char * ThumbFileName)
     uchar * ThumbnailPointer;
 
     if (ImageInfo.ThumbnailOffset == 0 || ImageInfo.ThumbnailAtEnd == FALSE){
+        if (ThumbFileName == NULL){
+            // Delete of nonexistent thumbnail (not even pointers present)
+            // No action, no error.
+            return FALSE;
+        }
+
         // Adding or removing of thumbnail is not possible - that would require rearranging
         // of the exif header, which is risky, and jhad doesn't know how to do.
-
         fprintf(stderr,"Image contains no thumbnail to replace - add is not possible\n");
 #ifdef SUPERDEBUG
         LOGE("Image contains no thumbnail to replace - add is not possible\n");
@@ -430,6 +439,10 @@ int ReplaceThumbnail(const char * ThumbFileName)
 	        return FALSE;
         }
     }else{
+        if (ImageInfo.ThumbnailSize == 0){
+             return FALSE;
+        }
+
         ThumbLen = 0;
         ThumbnailFile = NULL;
     }
@@ -469,15 +482,19 @@ void DiscardAllButExif(void)
     Section_t ExifKeeper;
     Section_t CommentKeeper;
     Section_t IptcKeeper;
+    Section_t XmpKeeper;
     int a;
 
     memset(&ExifKeeper, 0, sizeof(ExifKeeper));
     memset(&CommentKeeper, 0, sizeof(CommentKeeper));
     memset(&IptcKeeper, 0, sizeof(IptcKeeper));
+    memset(&XmpKeeper, 0, sizeof(IptcKeeper));
 
     for (a=0;a<SectionsRead;a++){
         if (Sections[a].Type == M_EXIF && ExifKeeper.Type == 0){
-            ExifKeeper = Sections[a];
+           ExifKeeper = Sections[a];
+        }else if (Sections[a].Type == M_XMP && XmpKeeper.Type == 0){
+           XmpKeeper = Sections[a];
         }else if (Sections[a].Type == M_COM && CommentKeeper.Type == 0){
             CommentKeeper = Sections[a];
         }else if (Sections[a].Type == M_IPTC && IptcKeeper.Type == 0){
@@ -498,6 +515,11 @@ void DiscardAllButExif(void)
     if (IptcKeeper.Type){
         CheckSectionsAllocated();
         Sections[SectionsRead++] = IptcKeeper;
+    }
+
+    if (XmpKeeper.Type){
+        CheckSectionsAllocated();
+        Sections[SectionsRead++] = XmpKeeper;
     }
 }    
 
@@ -537,7 +559,7 @@ int WriteJpegFile(const char * FileName)
     // Write all the misc sections
     for (a=0;a<SectionsRead-1;a++){
         fputc(0xff,outfile);
-        fputc(Sections[a].Type, outfile);
+        fputc((unsigned char)Sections[a].Type, outfile);
         fwrite(Sections[a].Data, Sections[a].Size, 1, outfile);
     }
 
@@ -611,6 +633,7 @@ int RemoveUnknownSections(void)
             case  M_SOS:
             case  M_JFIF:
             case  M_EXIF:
+            case  M_XMP:
             case  M_COM:
             case  M_DQT:
             case  M_DHT:

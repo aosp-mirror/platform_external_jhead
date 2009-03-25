@@ -81,143 +81,219 @@ const int BytesPerFormat[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
 //--------------------------------------------------------------------------
 // Describes tag values
 
-#define TAG_MAKE               0x010F
-#define TAG_MODEL              0x0110
-#define TAG_ORIENTATION        0x0112
-#define TAG_DATETIME           0x0132
-#define TAG_THUMBNAIL_OFFSET   0x0201
-#define TAG_THUMBNAIL_LENGTH   0x0202
-#define TAG_EXPOSURETIME       0x829A
-#define TAG_FNUMBER            0x829D
-#define TAG_EXIF_OFFSET        0x8769
-#define TAG_EXPOSURE_PROGRAM   0x8822
-#define TAG_GPSINFO            0x8825
-#define TAG_ISO_EQUIVALENT     0x8827
-#define TAG_DATETIME_ORIGINAL  0x9003
-#define TAG_DATETIME_DIGITIZED 0x9004
-#define TAG_SHUTTERSPEED       0x9201
-#define TAG_APERTURE           0x9202
-#define TAG_EXPOSURE_BIAS      0x9204
-#define TAG_MAXAPERTURE        0x9205
-#define TAG_SUBJECT_DISTANCE   0x9206
-#define TAG_METERING_MODE      0x9207
-#define TAG_LIGHT_SOURCE       0x9208
-#define TAG_FLASH              0x9209
-#define TAG_FOCALLENGTH        0x920A
-#define TAG_MAKER_NOTE         0x927C
-#define TAG_USERCOMMENT        0x9286
-#define TAG_EXIF_IMAGEWIDTH    0xa002
-#define TAG_EXIF_IMAGELENGTH   0xa003
-#define TAG_INTEROP_OFFSET     0xa005
-#define TAG_FOCALPLANEXRES     0xa20E
-#define TAG_FOCALPLANEUNITS    0xa210
-#define TAG_EXPOSURE_INDEX     0xa215
-#define TAG_EXPOSURE_MODE      0xa402
-#define TAG_WHITEBALANCE       0xa403
-#define TAG_DIGITALZOOMRATIO   0xA404
-#define TAG_FOCALLENGTH_35MM   0xa405
+#define TAG_INTEROP_INDEX          0x0001
+#define TAG_INTEROP_VERSION        0x0002
+#define TAG_IMAGE_WIDTH            0x0100
+#define TAG_IMAGE_LENGTH           0x0101
+#define TAG_BITS_PER_SAMPLE        0x0102
+#define TAG_COMPRESSION            0x0103
+#define TAG_PHOTOMETRIC_INTERP     0x0106
+#define TAG_FILL_ORDER             0x010A
+#define TAG_DOCUMENT_NAME          0x010D
+#define TAG_IMAGE_DESCRIPTION      0x010E
+#define TAG_MAKE                   0x010F
+#define TAG_MODEL                  0x0110
+#define TAG_SRIP_OFFSET            0x0111
+#define TAG_ORIENTATION            0x0112
+#define TAG_SAMPLES_PER_PIXEL      0x0115
+#define TAG_ROWS_PER_STRIP         0x0116
+#define TAG_STRIP_BYTE_COUNTS      0x0117
+#define TAG_X_RESOLUTION           0x011A
+#define TAG_Y_RESOLUTION           0x011B
+#define TAG_PLANAR_CONFIGURATION   0x011C
+#define TAG_RESOLUTION_UNIT        0x0128
+#define TAG_TRANSFER_FUNCTION      0x012D
+#define TAG_SOFTWARE               0x0131
+#define TAG_DATETIME               0x0132
+#define TAG_ARTIST                 0x013B
+#define TAG_WHITE_POINT            0x013E
+#define TAG_PRIMARY_CHROMATICITIES 0x013F
+#define TAG_TRANSFER_RANGE         0x0156
+#define TAG_JPEG_PROC              0x0200
+#define TAG_THUMBNAIL_OFFSET       0x0201
+#define TAG_THUMBNAIL_LENGTH       0x0202
+#define TAG_Y_CB_CR_COEFFICIENTS   0x0211
+#define TAG_Y_CB_CR_SUB_SAMPLING   0x0212
+#define TAG_Y_CB_CR_POSITIONING    0x0213
+#define TAG_REFERENCE_BLACK_WHITE  0x0214
+#define TAG_RELATED_IMAGE_WIDTH    0x1001
+#define TAG_RELATED_IMAGE_LENGTH   0x1002
+#define TAG_CFA_REPEAT_PATTERN_DIM 0x828D
+#define TAG_CFA_PATTERN1           0x828E
+#define TAG_BATTERY_LEVEL          0x828F
+#define TAG_COPYRIGHT              0x8298
+#define TAG_EXPOSURETIME           0x829A
+#define TAG_FNUMBER                0x829D
+#define TAG_IPTC_NAA               0x83BB
+#define TAG_EXIF_OFFSET            0x8769
+#define TAG_INTER_COLOR_PROFILE    0x8773
+#define TAG_EXPOSURE_PROGRAM       0x8822
+#define TAG_SPECTRAL_SENSITIVITY   0x8824
+#define TAG_GPSINFO                0x8825
+#define TAG_ISO_EQUIVALENT         0x8827
+#define TAG_OECF                   0x8828
+#define TAG_EXIF_VERSION           0x9000
+#define TAG_DATETIME_ORIGINAL      0x9003
+#define TAG_DATETIME_DIGITIZED     0x9004
+#define TAG_COMPONENTS_CONFIG      0x9101
+#define TAG_CPRS_BITS_PER_PIXEL    0x9102
+#define TAG_SHUTTERSPEED           0x9201
+#define TAG_APERTURE               0x9202
+#define TAG_BRIGHTNESS_VALUE       0x9203
+#define TAG_EXPOSURE_BIAS          0x9204
+#define TAG_MAXAPERTURE            0x9205
+#define TAG_SUBJECT_DISTANCE       0x9206
+#define TAG_METERING_MODE          0x9207
+#define TAG_LIGHT_SOURCE           0x9208
+#define TAG_FLASH                  0x9209
+#define TAG_FOCALLENGTH            0x920A
+#define TAG_MAKER_NOTE             0x927C
+#define TAG_USERCOMMENT            0x9286
+#define TAG_SUBSEC_TIME            0x9290
+#define TAG_SUBSEC_TIME_ORIG       0x9291
+#define TAG_SUBSEC_TIME_DIG        0x9292
+
+#define TAG_WINXP_TITLE            0x9c9b // Windows XP - not part of exif standard.
+#define TAG_WINXP_COMMENT          0x9c9c // Windows XP - not part of exif standard.
+#define TAG_WINXP_AUTHOR           0x9c9d // Windows XP - not part of exif standard.
+#define TAG_WINXP_KEYWORDS         0x9c9e // Windows XP - not part of exif standard.
+#define TAG_WINXP_SUBJECT          0x9c9f // Windows XP - not part of exif standard.
+
+#define TAG_FLASH_PIX_VERSION      0xA000
+#define TAG_COLOR_SPACE            0xA001
+#define TAG_EXIF_IMAGEWIDTH        0xA002
+#define TAG_EXIF_IMAGELENGTH       0xA003
+#define TAG_RELATED_AUDIO_FILE     0xA004
+#define TAG_INTEROP_OFFSET         0xA005
+#define TAG_FLASH_ENERGY           0xA20B
+#define TAG_SPATIAL_FREQ_RESP      0xA20C
+#define TAG_FOCAL_PLANE_XRES       0xA20E
+#define TAG_FOCAL_PLANE_YRES       0xA20F
+#define TAG_FOCAL_PLANE_UNITS      0xA210
+#define TAG_SUBJECT_LOCATION       0xA214
+#define TAG_EXPOSURE_INDEX         0xA215
+#define TAG_SENSING_METHOD         0xA217
+#define TAG_FILE_SOURCE            0xA300
+#define TAG_SCENE_TYPE             0xA301
+#define TAG_CFA_PATTERN            0xA302
+#define TAG_CUSTOM_RENDERED        0xA401
+#define TAG_EXPOSURE_MODE          0xA402
+#define TAG_WHITEBALANCE           0xA403
+#define TAG_DIGITALZOOMRATIO       0xA404
+#define TAG_FOCALLENGTH_35MM       0xA405
+#define TAG_SCENE_CAPTURE_TYPE     0xA406
+#define TAG_GAIN_CONTROL           0xA407
+#define TAG_CONTRAST               0xA408
+#define TAG_SATURATION             0xA409
+#define TAG_SHARPNESS              0xA40A
+#define TAG_DISTANCE_RANGE         0xA40C
 
 // TODO: replace the ", 0" values in this table with the correct format, e.g. ", FMT_USHORT"
 static const TagTable_t TagTable[] = {
-  { 0x001,   "InteropIndex", 0, 0},
-  { 0x002,   "InteropVersion", 0, 0},
-  { 0x100,   "ImageWidth", FMT_USHORT, 1},
-  { 0x101,   "ImageLength", FMT_USHORT, 1},
-  { 0x102,   "BitsPerSample", FMT_USHORT, 3},
-  { 0x103,   "Compression", FMT_USHORT, 1},
-  { 0x106,   "PhotometricInterpretation", FMT_USHORT, 1},
-  { 0x10A,   "FillOrder", 0, 0},
-  { 0x10D,   "DocumentName", 0, 0},
-  { 0x10E,   "ImageDescription", 0, 0 },
-  { 0x10F,   "Make", FMT_STRING, -1},
-  { 0x110,   "Model", FMT_STRING, -1},
-  { 0x111,   "StripOffsets", FMT_USHORT, 1},
-  { 0x112,   "Orientation", FMT_USHORT, 1},
-  { 0x115,   "SamplesPerPixel", FMT_USHORT, 3},
-  { 0x116,   "RowsPerStrip", FMT_USHORT, 1},
-  { 0x117,   "StripByteCounts", FMT_USHORT, 1},
-  { 0x11A,   "XResolution", FMT_URATIONAL, 1},
-  { 0x11B,   "YResolution", FMT_URATIONAL, 1},
-  { 0x11C,   "PlanarConfiguration", FMT_USHORT, 1},
-  { 0x128,   "ResolutionUnit", FMT_USHORT, 1},
-  { 0x12D,   "TransferFunction", FMT_USHORT, 768},
-  { 0x131,   "Software", FMT_STRING, -1},
-  { 0x132,   "DateTime", FMT_STRING, 20},
-  { 0x13B,   "Artist", FMT_STRING, -1},
-  { 0x13E,   "WhitePoint", FMT_SRATIONAL, 2},
-  { 0x13F,   "PrimaryChromaticities", FMT_SRATIONAL, 6},
-  { 0x156,   "TransferRange", 0, 0},
-  { 0x200,   "JPEGProc", 0, 0},
-  { 0x201,   "ThumbnailOffset", 0, 0},
-  { 0x202,   "ThumbnailLength", 0, 0},
-  { 0x211,   "YCbCrCoefficients", FMT_SRATIONAL, 3},
-  { 0x212,   "YCbCrSubSampling", FMT_USHORT, 2},
-  { 0x213,   "YCbCrPositioning", FMT_USHORT, 1},
-  { 0x214,   "ReferenceBlackWhite", FMT_SRATIONAL, 6},
-  { 0x1001,  "RelatedImageWidth", 0, 0},
-  { 0x1002,  "RelatedImageLength", 0, 0},
-  { 0x828D,  "CFARepeatPatternDim", 0, 0},
-  { 0x828E,  "CFAPattern", 0, 0},
-  { 0x828F,  "BatteryLevel", 0, 0},
-  { 0x8298,  "Copyright", FMT_STRING, -1},
-  { 0x829A,  "ExposureTime", FMT_USHORT, 1},
-  { 0x829D,  "FNumber", FMT_SRATIONAL, 1},
-  { 0x83BB,  "IPTC/NAA", 0, 0},
-  { 0x8769,  "ExifOffset", 0, 0},
-  { 0x8773,  "InterColorProfile", 0, 0},
-  { 0x8822,  "ExposureProgram", FMT_SSHORT, 1},
-  { 0x8824,  "SpectralSensitivity", FMT_STRING, -1},
-  { 0x8825,  "GPS Dir offset", 0, 0},
-  { 0x8827,  "ISOSpeedRatings", FMT_SSHORT, -1},
-  { 0x8828,  "OECF", 0, 0},
-  { 0x9000,  "ExifVersion", FMT_BYTE, 4},
-  { 0x9003,  "DateTimeOriginal", FMT_STRING, 20},
-  { 0x9004,  "DateTimeDigitized", FMT_STRING, 20},
-  { 0x9101,  "ComponentsConfiguration", FMT_BYTE, 4},
-  { 0x9102,  "CompressedBitsPerPixel", FMT_SRATIONAL, 1},
-  { 0x9201,  "ShutterSpeedValue", FMT_SRATIONAL, 1},
-  { 0x9202,  "ApertureValue", FMT_URATIONAL, 1},
-  { 0x9203,  "BrightnessValue", FMT_SRATIONAL, 1},
-  { 0x9204,  "ExposureBiasValue", FMT_SRATIONAL, 1},
-  { 0x9205,  "MaxApertureValue", FMT_URATIONAL, 1},
-  { 0x9206,  "SubjectDistance", FMT_URATIONAL, 1},
-  { 0x9207,  "MeteringMode", FMT_USHORT, 1},
-  { 0x9208,  "LightSource", FMT_USHORT, 1},
-  { 0x9209,  "Flash", FMT_USHORT, 1},
-  { 0x920A,  "FocalLength", FMT_URATIONAL, 1},
-  { 0x927C,  "MakerNote", FMT_STRING, -1},
-  { 0x9286,  "UserComment", FMT_STRING, -1},
-  { 0x9290,  "SubSecTime", FMT_STRING, -1},
-  { 0x9291,  "SubSecTimeOriginal", FMT_STRING, -1},
-  { 0x9292,  "SubSecTimeDigitized", FMT_STRING, -1},
-  { 0xA000,  "FlashPixVersion", FMT_BYTE, 4},
-  { 0xA001,  "ColorSpace", FMT_USHORT, 1},
-  { 0xA002,  "ExifImageWidth", 0, 0},
-  { 0xA003,  "ExifImageLength", 0, 0},
-  { 0xA004,  "RelatedAudioFile", 0, 0},
-  { 0xA005,  "InteroperabilityOffset", 0, 0},
-  { 0xA20B,  "FlashEnergy", FMT_URATIONAL, 1},
-  { 0xA20C,  "SpatialFrequencyResponse", FMT_STRING, -1},
-  { 0xA20E,  "FocalPlaneXResolution", FMT_URATIONAL, 1},
-  { 0xA20F,  "FocalPlaneYResolution", FMT_URATIONAL, 1},
-  { 0xA210,  "FocalPlaneResolutionUnit", FMT_USHORT, 1},
-  { 0xA214,  "SubjectLocation", FMT_USHORT, 2},
-  { 0xA215,  "ExposureIndex", FMT_URATIONAL, 1},
-  { 0xA217,  "SensingMethod", FMT_USHORT, 1},
-  { 0xA300,  "FileSource", 0, 1},
-  { 0xA301,  "SceneType", 0, 1},
-  { 0xA301,  "CFA Pattern", 0, -1},
-  { 0xA401,  "CustomRendered", FMT_USHORT, 1},
-  { 0xA402,  "ExposureMode", FMT_USHORT, 1},
-  { 0xA403,  "WhiteBalance", FMT_USHORT, 1},
-  { 0xA404,  "DigitalZoomRatio", FMT_URATIONAL, 1},
-  { 0xA405,  "FocalLengthIn35mmFilm", FMT_USHORT, 1},
-  { 0xA406,  "SceneCaptureType", FMT_USHORT, 1},
-  { 0xA407,  "GainControl", FMT_URATIONAL, 1},
-  { 0xA408,  "Contrast", FMT_USHORT, 1},
-  { 0xA409,  "Saturation", FMT_USHORT, 1},
-  { 0xA40a,  "Sharpness", FMT_USHORT, 1},
-  { 0xA40c,  "SubjectDistanceRange", FMT_USHORT, 1},
+  { TAG_INTEROP_INDEX,          "InteropIndex", 0, 0},
+  { TAG_INTEROP_VERSION,        "InteropVersion", 0, 0},
+  { TAG_IMAGE_WIDTH,            "ImageWidth", FMT_USHORT, 1},
+  { TAG_IMAGE_LENGTH,           "ImageLength", FMT_USHORT, 1},
+  { TAG_BITS_PER_SAMPLE,        "BitsPerSample", FMT_USHORT, 3},
+  { TAG_COMPRESSION,            "Compression", FMT_USHORT, 1},
+  { TAG_PHOTOMETRIC_INTERP,     "PhotometricInterpretation", FMT_USHORT, 1},
+  { TAG_FILL_ORDER,             "FillOrder", 0, 0},
+  { TAG_DOCUMENT_NAME,          "DocumentName", 0, 0},
+  { TAG_IMAGE_DESCRIPTION,      "ImageDescription", 0, 0 },
+  { TAG_MAKE,                   "Make", FMT_STRING, -1},
+  { TAG_MODEL,                  "Model", FMT_STRING, -1},
+  { TAG_SRIP_OFFSET,            "StripOffsets", FMT_USHORT, 1},
+  { TAG_ORIENTATION,            "Orientation", FMT_USHORT, 1},
+  { TAG_SAMPLES_PER_PIXEL,      "SamplesPerPixel", FMT_USHORT, 3},
+  { TAG_ROWS_PER_STRIP,         "RowsPerStrip", FMT_USHORT, 1},
+  { TAG_STRIP_BYTE_COUNTS,      "StripByteCounts", FMT_USHORT, 1},
+  { TAG_X_RESOLUTION,           "XResolution", FMT_URATIONAL, 1},
+  { TAG_Y_RESOLUTION,           "YResolution", FMT_URATIONAL, 1},
+  { TAG_PLANAR_CONFIGURATION,   "PlanarConfiguration", FMT_USHORT, 1},
+  { TAG_RESOLUTION_UNIT,        "ResolutionUnit", FMT_USHORT, 1},
+  { TAG_TRANSFER_FUNCTION,      "TransferFunction", FMT_USHORT, 768},
+  { TAG_SOFTWARE,               "Software", FMT_STRING, -1},
+  { TAG_DATETIME,               "DateTime", FMT_STRING, 20},
+  { TAG_ARTIST,                 "Artist", FMT_STRING, -1},
+  { TAG_WHITE_POINT,            "WhitePoint", FMT_SRATIONAL, 2},
+  { TAG_PRIMARY_CHROMATICITIES, "PrimaryChromaticities", FMT_SRATIONAL, 6},
+  { TAG_TRANSFER_RANGE,         "TransferRange", 0, 0},
+  { TAG_JPEG_PROC,              "JPEGProc", 0, 0},
+  { TAG_THUMBNAIL_OFFSET,       "ThumbnailOffset", 0, 0},
+  { TAG_THUMBNAIL_LENGTH,       "ThumbnailLength", 0, 0},
+  { TAG_Y_CB_CR_COEFFICIENTS,   "YCbCrCoefficients", FMT_SRATIONAL, 3},
+  { TAG_Y_CB_CR_SUB_SAMPLING,   "YCbCrSubSampling", FMT_USHORT, 2},
+  { TAG_Y_CB_CR_POSITIONING,    "YCbCrPositioning", FMT_USHORT, 1},
+  { TAG_REFERENCE_BLACK_WHITE,  "ReferenceBlackWhite", FMT_SRATIONAL, 6},
+  { TAG_RELATED_IMAGE_WIDTH,    "RelatedImageWidth", 0, 0},
+  { TAG_RELATED_IMAGE_LENGTH,   "RelatedImageLength", 0, 0},
+  { TAG_CFA_REPEAT_PATTERN_DIM, "CFARepeatPatternDim", 0, 0},
+  { TAG_CFA_PATTERN1,           "CFAPattern", 0, 0},
+  { TAG_BATTERY_LEVEL,          "BatteryLevel", 0, 0},
+  { TAG_COPYRIGHT,              "Copyright", FMT_STRING, -1},
+  { TAG_EXPOSURETIME,           "ExposureTime", FMT_USHORT, 1},
+  { TAG_FNUMBER,                "FNumber", FMT_SRATIONAL, 1},
+  { TAG_IPTC_NAA,               "IPTC/NAA", 0, 0},
+  { TAG_EXIF_OFFSET,            "ExifOffset", 0, 0},
+  { TAG_INTER_COLOR_PROFILE,    "InterColorProfile", 0, 0},
+  { TAG_EXPOSURE_PROGRAM,       "ExposureProgram", FMT_SSHORT, 1},
+  { TAG_SPECTRAL_SENSITIVITY,   "SpectralSensitivity", FMT_STRING, -1},
+  { TAG_GPSINFO,                "GPS Dir offset", 0, 0},
+  { TAG_ISO_EQUIVALENT,         "ISOSpeedRatings", FMT_SSHORT, -1},
+  { TAG_OECF,                   "OECF", 0, 0},
+  { TAG_EXIF_VERSION,           "ExifVersion", FMT_BYTE, 4},
+  { TAG_DATETIME_ORIGINAL,      "DateTimeOriginal", FMT_STRING, 20},
+  { TAG_DATETIME_DIGITIZED,     "DateTimeDigitized", FMT_STRING, 20},
+  { TAG_COMPONENTS_CONFIG,      "ComponentsConfiguration", FMT_BYTE, 4},
+  { TAG_CPRS_BITS_PER_PIXEL,    "CompressedBitsPerPixel", FMT_SRATIONAL, 1},
+  { TAG_SHUTTERSPEED,           "ShutterSpeedValue", FMT_SRATIONAL, 1},
+  { TAG_APERTURE,               "ApertureValue", FMT_URATIONAL, 1},
+  { TAG_BRIGHTNESS_VALUE,       "BrightnessValue", FMT_SRATIONAL, 1},
+  { TAG_EXPOSURE_BIAS,          "ExposureBiasValue", FMT_SRATIONAL, 1},
+  { TAG_MAXAPERTURE,            "MaxApertureValue", FMT_URATIONAL, 1},
+  { TAG_SUBJECT_DISTANCE,       "SubjectDistance", FMT_URATIONAL, 1},
+  { TAG_METERING_MODE,          "MeteringMode", FMT_USHORT, 1},
+  { TAG_LIGHT_SOURCE,           "LightSource", FMT_USHORT, 1},
+  { TAG_FLASH,                  "Flash", FMT_USHORT, 1},
+  { TAG_FOCALLENGTH,            "FocalLength", FMT_URATIONAL, 1},
+  { TAG_MAKER_NOTE,             "MakerNote", FMT_STRING, -1},
+  { TAG_USERCOMMENT,            "UserComment", FMT_STRING, -1},
+  { TAG_SUBSEC_TIME,            "SubSecTime", FMT_STRING, -1},
+  { TAG_SUBSEC_TIME_ORIG,       "SubSecTimeOriginal", FMT_STRING, -1},
+  { TAG_SUBSEC_TIME_DIG,        "SubSecTimeDigitized", FMT_STRING, -1},
+  { TAG_WINXP_TITLE,            "Windows-XP Title", 0, 0},
+  { TAG_WINXP_COMMENT,          "Windows-XP comment", 0, 0},
+  { TAG_WINXP_AUTHOR,           "Windows-XP author", 0, 0},
+  { TAG_WINXP_KEYWORDS,         "Windows-XP keywords", 0, 0},
+  { TAG_WINXP_SUBJECT,          "Windows-XP subject", 0, 0},
+  { TAG_FLASH_PIX_VERSION,      "FlashPixVersion", FMT_BYTE, 4},
+  { TAG_COLOR_SPACE,            "ColorSpace", FMT_USHORT, 1},
+  { TAG_EXIF_IMAGEWIDTH,        "ExifImageWidth", 0, 0},
+  { TAG_EXIF_IMAGELENGTH,       "ExifImageLength", 0, 0},
+  { TAG_RELATED_AUDIO_FILE,     "RelatedAudioFile", 0, 0},
+  { TAG_INTEROP_OFFSET,         "InteroperabilityOffset", 0, 0},
+  { TAG_FLASH_ENERGY,           "FlashEnergy", FMT_URATIONAL, 1},
+  { TAG_SPATIAL_FREQ_RESP,      "SpatialFrequencyResponse", FMT_STRING, -1},
+  { TAG_FOCAL_PLANE_XRES,       "FocalPlaneXResolution", FMT_URATIONAL, 1},
+  { TAG_FOCAL_PLANE_YRES,       "FocalPlaneYResolution", FMT_URATIONAL, 1},
+  { TAG_FOCAL_PLANE_UNITS,      "FocalPlaneResolutionUnit", FMT_USHORT, 1},
+  { TAG_SUBJECT_LOCATION,       "SubjectLocation", FMT_USHORT, 2},
+  { TAG_EXPOSURE_INDEX,         "ExposureIndex", FMT_URATIONAL, 1},
+  { TAG_SENSING_METHOD,         "SensingMethod", FMT_USHORT, 1},
+  { TAG_FILE_SOURCE,            "FileSource", 0, 1},
+  { TAG_SCENE_TYPE,             "SceneType", 0, 1},
+  { TAG_CFA_PATTERN,            "CFA Pattern", 0, -1},
+  { TAG_CUSTOM_RENDERED,        "CustomRendered", FMT_USHORT, 1},
+  { TAG_EXPOSURE_MODE,          "ExposureMode", FMT_USHORT, 1},
+  { TAG_WHITEBALANCE,           "WhiteBalance", FMT_USHORT, 1},
+  { TAG_DIGITALZOOMRATIO,       "DigitalZoomRatio", FMT_URATIONAL, 1},
+  { TAG_FOCALLENGTH_35MM,       "FocalLengthIn35mmFilm", FMT_USHORT, 1},
+  { TAG_SCENE_CAPTURE_TYPE,     "SceneCaptureType", FMT_USHORT, 1},
+  { TAG_GAIN_CONTROL,           "GainControl", FMT_URATIONAL, 1},
+  { TAG_CONTRAST,               "Contrast", FMT_USHORT, 1},
+  { TAG_SATURATION,             "Saturation", FMT_USHORT, 1},
+  { TAG_SHARPNESS,              "Sharpness", FMT_USHORT, 1},
+  { TAG_DISTANCE_RANGE,         "SubjectDistanceRange", FMT_USHORT, 1},
 } ;
 
 #define TAG_TABLE_SIZE  (sizeof(TagTable) / sizeof(TagTable_t))
@@ -308,7 +384,7 @@ void PrintFormatNumber(void * ValuePtr, int Format, int ByteCount)
 {
     int s,n;
 
-    for(n=0;n<20;n++){
+    for(n=0;n<16;n++){
         switch(Format){
             case FMT_SBYTE:
             case FMT_BYTE:      printf("%02x",*(uchar *)ValuePtr); s=1;  break;
@@ -334,7 +410,7 @@ void PrintFormatNumber(void * ValuePtr, int Format, int ByteCount)
         ValuePtr = (void *)((char *)ValuePtr + s);
 
     }
-    if (n >= 20) printf("...");
+    if (n >= 16) printf("...");
 }
 
 
@@ -414,12 +490,12 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
                 // Version 1.3 of jhead would truncate a bit too much.
                 // This also caught later on as well.
             }else{
-                ErrNonfatal("Illegally sized directory",0,0);
+                ErrNonfatal("Illegally sized exif subdirectory (%d entries)",NumDirEntries,0);
                 return;
             }
         }
         if (DumpExifMap){
-            printf("Map: %05d-%05d: Directory\n",DirStart-OffsetBase, DirEnd+4-OffsetBase);
+            printf("Map: %05d-%05d: Directory\n",(int)(DirStart-OffsetBase), (int)(DirEnd+4-OffsetBase));
         }
 
 
@@ -575,9 +651,28 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
                     (char *)ValuePtr - (char *)OffsetBase;
                 break;
 
+            case TAG_WINXP_COMMENT:
+                if (ImageInfo.Comments[0]){ // We already have a jpeg comment.
+                    // Already have a comment (probably windows comment), skip this one.
+                    if (ShowTags) printf("Windows XP commend and other comment in header\n");
+                    break; // Already have a windows comment, skip this one.
+                }
+
+                if (ByteCount > 1){
+                    if (ByteCount > MAX_COMMENT_SIZE) ByteCount = MAX_COMMENT_SIZE;
+                    memcpy(ImageInfo.Comments, ValuePtr, ByteCount);
+                    ImageInfo.CommentWidchars = ByteCount/2;
+                }
+                break;
 
             case TAG_USERCOMMENT:
-                // Olympus has this padded with trailing spaces.  Remove these first.
+                if (ImageInfo.Comments[0]){ // We already have a jpeg comment.
+                    // Already have a comment (probably windows comment), skip this one.
+                    if (ShowTags) printf("Multiple comments in exif header\n");
+                    break; // Already have a windows comment, skip this one.
+                }
+
+                // Comment is often padded with trailing spaces.  Remove these first.
                 for (a=ByteCount;;){
                     a--;
                     if ((ValuePtr)[a] == ' '){
@@ -598,9 +693,8 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
                             break;
                         }
                     }
-
                 }else{
-                    strncpy(ImageInfo.Comments, (char *)ValuePtr, 199);
+                    strncpy(ImageInfo.Comments, (char *)ValuePtr, MAX_COMMENT_SIZE-1);
                 }
                 break;
 
@@ -679,11 +773,11 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
                 if (ExifImageWidth < a) ExifImageWidth = a;
                 break;
 
-            case TAG_FOCALPLANEXRES:
+            case TAG_FOCAL_PLANE_XRES:
                 FocalplaneXRes = ConvertAnyFormat(ValuePtr, Format);
                 break;
 
-            case TAG_FOCALPLANEUNITS:
+            case TAG_FOCAL_PLANE_UNITS:
                 switch((int)ConvertAnyFormat(ValuePtr, Format)){
                     case 1: FocalplaneUnits = 25.4; break; // inch
                     case 2:
@@ -790,6 +884,12 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
                 // if its present, use it to compute equivalent focal length instead of
                 // computing it from sensor geometry and actual focal length.
                 ImageInfo.FocalLength35mmEquiv = (unsigned)ConvertAnyFormat(ValuePtr, Format);
+                break;
+
+            case TAG_DISTANCE_RANGE:
+                // Three possible standard values:
+                //   1 = macro, 2 = close, 3 = distant
+                ImageInfo.DistanceRange = (int)ConvertAnyFormat(ValuePtr, Format);
                 break;
         }
     }
@@ -1073,12 +1173,12 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
     unsigned short NumEntries;
     int DataWriteIndex;
     int DirIndex;
-    int ThumbnailOffsetDirIndex = 0;
+    int DirContinuation = 0;
 
 #ifdef SUPERDEBUG
     LOGE("create_EXIF %d exif elements, %d gps elements", exifTagCount, gpsTagCount);
 #endif
-
+    
     MotorolaOrder = 0;
 
     memcpy(Buffer+2, "Exif\0\0II",8);
@@ -1097,7 +1197,8 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
 
         Put16u(Buffer+DirIndex, NumEntries); // Number of entries
         DirIndex += 2;
-        // Entries go here....
+  
+        // Entries go here...
         {
             // Date/time entry
             char* dateTime = NULL;
@@ -1142,8 +1243,7 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
                                     &DirIndex,
                                     &DataWriteIndex);
             }
-        }
-        {
+        
             if (gpsTagCount) {
                 // Link to gps dir entry
                 writeExifTagAndData(TAG_GPSINFO,
@@ -1161,7 +1261,7 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
             if (gpsTagCount) {
                 exifDirPtr += 2 + gpsTagCount*12 + 4;
             }
-            ThumbnailOffsetDirIndex = DirIndex;
+            DirContinuation = DirIndex;
             writeExifTagAndData(TAG_EXIF_OFFSET,
                                 FMT_ULONG,
                                 1,
@@ -1173,9 +1273,10 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
         }
 
         // End of directory - contains optional link to continued directory.
-        Put32u(Buffer+DirIndex, 0);
+        DirContinuation = DirIndex;
         printf("Ending Exif section DirIndex = %d DataWriteIndex %d", DirIndex, DataWriteIndex);
     }
+
 
     // GPS Section
     if (gpsTagCount) {
@@ -1216,9 +1317,8 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
     }
 
     {
-        // Now that we know where the Thumbnail section is written, we have to go
-        // back and "poke" the address to point here.
-        Put32u(Buffer+ThumbnailOffsetDirIndex + 8, DataWriteIndex-8); // Pointer or value.
+        //Continuation which links to this directory;
+        Put32u(Buffer+DirContinuation, DataWriteIndex-8);
 
         printf("Starting Thumbnail section DirIndex = %d", DirIndex);
         DirIndex = DataWriteIndex;
@@ -1256,6 +1356,7 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
         printf("Ending Thumbnail section DirIndex = %d DataWriteIndex %d", DirIndex, DataWriteIndex);
     }
 
+    
     Buffer[0] = (unsigned char)(DataWriteIndex >> 8);
     Buffer[1] = (unsigned char)DataWriteIndex;
 
@@ -1594,6 +1695,23 @@ void ShowImageInfo(int ShowFileInfo)
             break;
     }
 
+    if (ImageInfo.DistanceRange) {
+        printf("Focus range  : ");
+        switch(ImageInfo.DistanceRange) {
+            case 1:
+                printf("macro");
+                break;
+            case 2:
+                printf("close");
+                break;
+            case 3:
+                printf("distant");
+                break;
+        }
+        printf("\n");
+    }
+
+
 
     if (ImageInfo.Process != M_SOF0){
         // don't show it if its the plain old boring 'baseline' process, but do
@@ -1622,21 +1740,25 @@ void ShowImageInfo(int ShowFileInfo)
     if (ImageInfo.Comments[0]){
         int a,c;
         printf("Comment      : ");
-        for (a=0;a<MAX_COMMENT;a++){
-            c = ImageInfo.Comments[a];
-            if (c == '\0') break;
-            if (c == '\n'){
-                // Do not start a new line if the string ends with a carriage return.
-                if (ImageInfo.Comments[a+1] != '\0'){
-                    printf("\nComment      : ");
+        if (!ImageInfo.CommentWidchars){
+            for (a=0;a<MAX_COMMENT_SIZE;a++){
+                c = ImageInfo.Comments[a];
+                if (c == '\0') break;
+                if (c == '\n'){
+                    // Do not start a new line if the string ends with a carriage return.
+                    if (ImageInfo.Comments[a+1] != '\0'){
+                        printf("\nComment      : ");
+                    }else{
+                        printf("\n");
+                    }
                 }else{
-                    printf("\n");
+                    putchar(c);
                 }
-            }else{
-                putchar(c);
             }
+            printf("\n");
+        }else{
+            printf("%.*ls\n", ImageInfo.CommentWidchars, (wchar_t *)ImageInfo.Comments);
         }
-        printf("\n");
     }
     if (ImageInfo.ThumbnailOffset){
         printf("Map: %05d-%05d: Thumbnail\n",ImageInfo.ThumbnailOffset, ImageInfo.ThumbnailOffset+ImageInfo.ThumbnailSize);

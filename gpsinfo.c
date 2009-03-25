@@ -205,21 +205,22 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
                     ErrNonfatal("Inappropriate format (%d) for GPS coordinates!", Format, 0);
                 }
                 strcpy(FmtString, "%0.0fd %0.0fm %0.0fs");
-
                 for (a=0;a<3;a++){
                     int den, digits;
 
                     den = Get32s(ValuePtr+4+a*ComponentSize);
                     digits = 0;
-                    while (den > 1){
+                    while (den > 1 && digits <= 6){
                         den = den / 10;
                         digits += 1;
                     }
+                    if (digits > 6) digits = 6;
                     FmtString[1+a*7] = (char)('2'+digits+(digits ? 1 : 0));
                     FmtString[3+a*7] = (char)('0'+digits);
 
                     Values[a] = ConvertAnyFormat(ValuePtr+a*ComponentSize, Format);
                 }
+
                 sprintf(TempString, FmtString, Values[0], Values[1], Values[2]);
 
                 if (Tag == TAG_GPS_LAT){
@@ -244,7 +245,8 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
                 break;
 
             case TAG_GPS_ALT:
-                sprintf(ImageInfo.GpsAlt + 1, "%dm", Get32s(ValuePtr));
+                sprintf(ImageInfo.GpsAlt + 1, "%.2fm", 
+                    ConvertAnyFormat(ValuePtr, Format));
                 break;
         }
 
@@ -256,7 +258,7 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
                 // Show unknown tag
                 printf("        Illegal GPS tag %04x=", Tag);
             }
-    
+
             switch(Format){
                 case FMT_UNDEFINED:
                     // Undefined is typically an ascii string.

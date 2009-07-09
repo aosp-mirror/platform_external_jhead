@@ -10,7 +10,7 @@ are met:
    notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright
    notice, this list of conditions and the following disclaimer in
-   the documentation and/or other materials provided with the 
+   the documentation and/or other materials provided with the
    distribution.
  * Neither the name of Google, Inc. nor the names of its contributors
    may be used to endorse or promote products derived from this
@@ -23,7 +23,7 @@ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
 COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
-OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED 
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
 AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
@@ -87,7 +87,7 @@ static int loadExifInfo(const char* FileName, int readJPG) {
     ImageInfo.FlashUsed = -1;
     ImageInfo.MeteringMode = -1;
     ImageInfo.Whitebalance = -1;
-    
+
     // Store file date/time.
     {
         struct stat st;
@@ -132,7 +132,7 @@ static void saveJPGFile(const char* filename) {
     LOGE("WriteJpegFile %s", filename);
 #endif
     if (WriteJpegFile(filename)) {
-    
+
         // Copy the access rights from original file
 #ifdef SUPERDEBUG
         LOGE("stating old file %s", backupName);
@@ -141,13 +141,13 @@ static void saveJPGFile(const char* filename) {
             // set Unix access rights and time to new file
             struct utimbuf mtime;
             chmod(filename, buf.st_mode);
-    
+
             mtime.actime = buf.st_mtime;
             mtime.modtime = buf.st_mtime;
-    
+
             utime(filename, &mtime);
         }
-    
+
         // Now that we are done, remove original file.
 #ifdef SUPERDEBUG
         LOGE("unlinking old file %s", backupName);
@@ -346,7 +346,7 @@ exit:
 #endif
 
 	DiscardData();
-	
+
 // Temporarily saving these commented out lines because they represent a lot of figuring out
 // patterns for JNI.
 //    // Get link to Method "entrySet"
@@ -412,7 +412,7 @@ static jboolean appendThumbnail(JNIEnv *env, jobject jobj, jstring jfilename, js
  #endif
     (*env)->ReleaseStringUTFChars(env, jfilename, filename);
     (*env)->ReleaseStringUTFChars(env, jthumbnailfilename, thumbnailfilename);
-    
+
     DiscardData();
     return JNI_TRUE;
 }
@@ -682,7 +682,7 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
     return result;
 }
 
-static const char *classPathName = "com/android/camera/ExifInterface";
+static const char *classPathName = "android/media/ExifInterface";
 
 static JNINativeMethod methods[] = {
   {"saveAttributesNative", "(Ljava/lang/String;Ljava/lang/String;)V", (void*)saveAttributes },

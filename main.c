@@ -345,8 +345,6 @@ exit:
     LOGE("returning from saveAttributes");
 #endif
 
-	DiscardData();
-
 // Temporarily saving these commented out lines because they represent a lot of figuring out
 // patterns for JNI.
 //    // Get link to Method "entrySet"
@@ -425,6 +423,7 @@ static void commitChanges(JNIEnv *env, jobject jobj, jstring jfilename)
     const char* filename = (*env)->GetStringUTFChars(env, jfilename, NULL);
     if (filename) {
         saveJPGFile(filename);
+        DiscardData();
         (*env)->ReleaseStringUTFChars(env, jfilename, filename);
     }
 }

@@ -556,18 +556,31 @@ int WriteJpegFile(const char * FileName)
         fwrite(JfifHead, 18, 1, outfile);
     }
 
+    int writeOk = FALSE;
+    int nWrite = 0;
     // Write all the misc sections
     for (a=0;a<SectionsRead-1;a++){
         fputc(0xff,outfile);
         fputc((unsigned char)Sections[a].Type, outfile);
-        fwrite(Sections[a].Data, Sections[a].Size, 1, outfile);
+	nWrite = fwrite(Sections[a].Data, 1, Sections[a].Size, outfile);
+        writeOk = (nWrite == Sections[a].Size);
+        if(!writeOk){
+            LOGE("write section %d failed expect %d actual %d",a,Sections[a].Size,nWrite);
+            break;
+        }
     }
 
     // Write the remaining image data.
-    fwrite(Sections[a].Data, Sections[a].Size, 1, outfile);
+    if (writeOk){
+        nWrite = fwrite(Sections[a].Data, 1,Sections[a].Size, outfile);
+	writeOk = (nWrite == Sections[a].Size);
+        if (!writeOk){
+            LOGE("write section %d failed expect %d actual %d",a,Sections[a].Size,nWrite);
+        }
+    }
        
     fclose(outfile);
-    return TRUE;
+    return writeOk;
 }
 
 

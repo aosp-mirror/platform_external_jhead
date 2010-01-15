@@ -1,9 +1,9 @@
 //--------------------------------------------------------------------------
 // Include file for jhead program.
 //
-// This include file only defines stuff that goes across modules.  
-// I like to keep the definitions for macros and structures as close to 
-// where they get used as possible, so include files only get stuff that 
+// This include file only defines stuff that goes across modules.
+// I like to keep the definitions for macros and structures as close to
+// where they get used as possible, so include files only get stuff that
 // gets used in more than one file.
 //--------------------------------------------------------------------------
 #define _CRT_SECURE_NO_DEPRECATE 1
@@ -113,6 +113,9 @@ typedef struct {
     char GpsLongRaw[31];
     char GpsLongRef[2];
     char GpsAlt[20];
+    // gps-datestamp is 11 bytes ascii in EXIF 2.2
+    char GpsDateStamp[11];
+    char GpsTimeStamp[11];
 }ImageInfo_t;
 
 
@@ -171,7 +174,7 @@ int TagNameToValue(const char* tagName);
 extern const int BytesPerFormat[];
 #define NUM_FORMATS 12
 
-#define FMT_BYTE       1 
+#define FMT_BYTE       1
 #define FMT_STRING     2
 #define FMT_USHORT     3
 #define FMT_ULONG      4
@@ -190,7 +193,7 @@ extern void ProcessMakerNote(unsigned char * DirStart, int ByteCount,
                  unsigned char * OffsetBase, unsigned ExifLength);
 
 // gpsinfo.c prototypes
-void ProcessGpsInfo(unsigned char * ValuePtr, int ByteCount, 
+void ProcessGpsInfo(unsigned char * ValuePtr, int ByteCount,
                 unsigned char * OffsetBase, unsigned ExifLength);
 int IsGpsTag(const char* tag);
 int GpsTagToFormatType(unsigned short tag);
@@ -255,7 +258,7 @@ extern char* formatStr(int format);
 #define M_JFIF  0xE0          // Jfif marker
 #define M_EXIF  0xE1          // Exif marker.  Also used for XMP data!
 #define M_XMP   0x10E1        // Not a real tag (same value in file as Exif!)
-#define M_COM   0xFE          // COMment 
+#define M_COM   0xFE          // COMment
 #define M_DQT   0xDB
 #define M_DHT   0xC4
 #define M_DRI   0xDD

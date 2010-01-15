@@ -15,7 +15,8 @@
 #define TAG_GPS_LONG       4
 #define TAG_GPS_ALT_REF    5
 #define TAG_GPS_ALT        6
-
+#define TAG_GPS_TIMESTAMP  7
+#define TAG_GPS_DATESTAMP  29
 
 static TagTable_t GpsTags[]= {
     { 0x00, "GPSVersionID", FMT_BYTE, 4},
@@ -135,6 +136,8 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
     strcpy(ImageInfo.GpsLat, "? ?");
     strcpy(ImageInfo.GpsLong, "? ?");
     ImageInfo.GpsAlt[0] = 0;
+    bzero(ImageInfo.GpsTimeStamp, sizeof(ImageInfo.GpsTimeStamp));
+    bzero(ImageInfo.GpsDateStamp, sizeof(ImageInfo.GpsDateStamp));
 
     for (de=0;de<NumDirEntries;de++){
         unsigned Tag, Format, Components;
@@ -247,6 +250,19 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
             case TAG_GPS_ALT:
                 sprintf(ImageInfo.GpsAlt + 1, "%.2fm", 
                     ConvertAnyFormat(ValuePtr, Format));
+                break;
+
+            case TAG_GPS_TIMESTAMP:
+                snprintf(ImageInfo.GpsTimeStamp,
+                    sizeof(ImageInfo.GpsTimeStamp), "%d:%d:%d",
+                    (int) ConvertAnyFormat(ValuePtr, Format),
+                    (int) ConvertAnyFormat(ValuePtr + 8, Format),
+                    (int) ConvertAnyFormat(ValuePtr + 16, Format)
+                );
+                break;
+
+            case TAG_GPS_DATESTAMP:
+                strncpy(ImageInfo.GpsDateStamp, (char*)ValuePtr, sizeof(ImageInfo.GpsDateStamp));
                 break;
         }
 

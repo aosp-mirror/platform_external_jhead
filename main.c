@@ -651,6 +651,14 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
             bufLen = addKeyValueString(&buf, bufLen, "GPSAltitude", ImageInfo.GpsAlt);
             if (bufLen == 0) return NULL;
         }
+        if (ImageInfo.GpsDateStamp[0]) {
+            bufLen = addKeyValueString(&buf, bufLen, "GPSDateStamp", ImageInfo.GpsDateStamp);
+            if (bufLen == 0) return NULL;
+        }
+        if (ImageInfo.GpsTimeStamp[0]) {
+            bufLen = addKeyValueString(&buf, bufLen, "GPSTimeStamp", ImageInfo.GpsTimeStamp);
+            if (bufLen == 0) return NULL;
+        }
     }
 
     if (ImageInfo.Comments[0]) {

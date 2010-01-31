@@ -59,6 +59,11 @@ extern int DumpExifMap;
 
 #define MAX_DATE_COPIES 10
 
+typedef struct {
+    uint32_t num;
+    uint32_t denom;
+} rat_t;
+
 //--------------------------------------------------------------------------
 // This structure stores Exif header image elements in a simple manner
 // Used to store camera data as extracted from the various ways that it can be
@@ -75,7 +80,7 @@ typedef struct {
     int   IsColor;
     int   Process;
     int   FlashUsed;
-    float FocalLength;
+    rat_t FocalLength;
     float ExposureTime;
     float ApertureFNumber;
     float Distance;

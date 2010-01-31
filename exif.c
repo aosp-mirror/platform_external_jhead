@@ -717,7 +717,8 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
             case TAG_FOCALLENGTH:
                 // Nice digital cameras actually save the focal length as a function
                 // of how farthey are zoomed in.
-                ImageInfo.FocalLength = (float)ConvertAnyFormat(ValuePtr, Format);
+                ImageInfo.FocalLength.num = Get32u(ValuePtr);
+                ImageInfo.FocalLength.denom = Get32u(4+(char *)ValuePtr);
                 break;
 
             case TAG_SUBJECT_DISTANCE:
@@ -1047,10 +1048,13 @@ void process_EXIF (unsigned char * ExifSection, unsigned int length)
         // that Jhad can do about it - its a camera problem.
         ImageInfo.CCDWidth = (float)(ExifImageWidth * FocalplaneUnits / FocalplaneXRes);
 
-        if (ImageInfo.FocalLength && ImageInfo.FocalLength35mmEquiv == 0){
+        if (ImageInfo.FocalLength.num != 0 && ImageInfo.FocalLength.denom != 0
+            && ImageInfo.FocalLength35mmEquiv == 0){
             // Compute 35 mm equivalent focal length based on sensor geometry if we haven't
             // already got it explicitly from a tag.
-            ImageInfo.FocalLength35mmEquiv = (int)(ImageInfo.FocalLength/ImageInfo.CCDWidth*36 + 0.5);
+            ImageInfo.FocalLength35mmEquiv = (int)(
+                (double)ImageInfo.FocalLength.num / ImageInfo.FocalLength.denom
+                / ImageInfo.CCDWidth * 36 + 0.5);
         }
     }
 }
@@ -1559,8 +1563,8 @@ void ShowImageInfo(int ShowFileInfo)
     }
 
 
-    if (ImageInfo.FocalLength){
-        printf("Focal length : %4.1fmm",(double)ImageInfo.FocalLength);
+    if (ImageInfo.FocalLength.num != 0 && ImageInfo.FocalLength.denom != 0) {
+        printf("Focal length : %4.1fmm",(double)ImageInfo.FocalLength.num / ImageInfo.FocalLength.denom);
         if (ImageInfo.FocalLength35mmEquiv){
             printf("  (35mm equivalent: %dmm)", ImageInfo.FocalLength35mmEquiv);
         }

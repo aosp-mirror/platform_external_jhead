@@ -517,6 +517,13 @@ static int addKeyValueDouble(char** buf, int bufLen, const char* key, double val
     return addKeyValueString(buf, bufLen, key, valueStr);
 }
 
+// Returns new buffer length. Rational value will be appended as "numerator/denominator".
+static int addKeyValueRational(char** buf, int bufLen, const char* key, rat_t value) {
+    char valueStr[25];
+    snprintf(valueStr, sizeof(valueStr), "%u/%u", value.num, value.denom);
+    return addKeyValueString(buf, bufLen, key, valueStr);
+}
+
 static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
 {
 #ifdef SUPERDEBUG
@@ -571,8 +578,8 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
     bufLen = addKeyValueInt(&buf, bufLen, "Flash", ImageInfo.FlashUsed);
     if (bufLen == 0) return NULL;
 
-    if (ImageInfo.FocalLength){
-        bufLen = addKeyValueInt(&buf, bufLen, "FocalLength", ImageInfo.FocalLength);
+    if (ImageInfo.FocalLength.num != 0 && ImageInfo.FocalLength.denom != 0) {
+        bufLen = addKeyValueRational(&buf, bufLen, "FocalLength", ImageInfo.FocalLength);
         if (bufLen == 0) return NULL;
     }
 

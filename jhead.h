@@ -14,6 +14,7 @@
 #include <time.h>
 #include <errno.h>
 #include <ctype.h>
+#include <stdint.h>
 
 //--------------------------------------------------------------------------
 

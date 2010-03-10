@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------
 // Parsing of GPS info from exif header.
 //
-// Matthias Wandel,  Dec 1999 - Dec 2002 
+// Matthias Wandel,  Dec 1999 - Dec 2002
 //--------------------------------------------------------------------------
 #include "jhead.h"
 
@@ -16,6 +16,7 @@
 #define TAG_GPS_ALT_REF    5
 #define TAG_GPS_ALT        6
 #define TAG_GPS_TIMESTAMP  7
+#define TAG_GPS_PROCESSING_METHOD 27
 #define TAG_GPS_DATESTAMP  29
 
 static TagTable_t GpsTags[]= {
@@ -52,7 +53,10 @@ static TagTable_t GpsTags[]= {
     { 0x1E, "GPSDifferential", FMT_SSHORT, 1},
 };
 
+static const char ExifAsciiPrefix[] = { 0x41, 0x53, 0x43, 0x49, 0x49, 0x0, 0x0, 0x0 };
+
 #define MAX_GPS_TAG  (sizeof(GpsTags) / sizeof(TagTable_t))
+#define EXIF_ASCII_PREFIX_LEN (sizeof(ExifAsciiPrefix))
 
 // Define the line below to turn on poor man's debugging output
 #undef SUPERDEBUG
@@ -138,6 +142,7 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
     ImageInfo.GpsAlt[0] = 0;
     bzero(ImageInfo.GpsTimeStamp, sizeof(ImageInfo.GpsTimeStamp));
     bzero(ImageInfo.GpsDateStamp, sizeof(ImageInfo.GpsDateStamp));
+    bzero(ImageInfo.GpsProcessingMethod, sizeof(ImageInfo.GpsProcessingMethod));
 
     for (de=0;de<NumDirEntries;de++){
         unsigned Tag, Format, Components;
@@ -264,6 +269,20 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
             case TAG_GPS_DATESTAMP:
                 strncpy(ImageInfo.GpsDateStamp, (char*)ValuePtr, sizeof(ImageInfo.GpsDateStamp));
                 break;
+
+            case TAG_GPS_PROCESSING_METHOD:
+                if (ByteCount > EXIF_ASCII_PREFIX_LEN && 
+                    memcmp(ValuePtr, ExifAsciiPrefix, EXIF_ASCII_PREFIX_LEN) == 0) {
+                    int length =
+                        ByteCount < GPS_PROCESSING_METHOD_LEN + EXIF_ASCII_PREFIX_LEN ?
+                        ByteCount - EXIF_ASCII_PREFIX_LEN : GPS_PROCESSING_METHOD_LEN;
+                    memcpy(ImageInfo.GpsProcessingMethod,
+                        (char*)(ValuePtr + EXIF_ASCII_PREFIX_LEN), length);
+                    ImageInfo.GpsProcessingMethod[length] = 0;
+                } else {
+                    LOGW("Unsupported encoding for GPSProcessingMethod");
+                }
+                break;
         }
 
         if (ShowTags){
@@ -314,4 +333,4 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
     }
 }
 
-   
+

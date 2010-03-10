@@ -666,6 +666,10 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
             bufLen = addKeyValueString(&buf, bufLen, "GPSTimeStamp", ImageInfo.GpsTimeStamp);
             if (bufLen == 0) return NULL;
         }
+        if (ImageInfo.GpsProcessingMethod[0]) {
+            bufLen = addKeyValueString(&buf, bufLen, "GPSProcessingMethod", ImageInfo.GpsProcessingMethod);
+            if (bufLen == 0) return NULL;
+        }
     }
 
     if (ImageInfo.Comments[0]) {

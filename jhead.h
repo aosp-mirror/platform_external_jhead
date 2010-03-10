@@ -37,6 +37,7 @@ typedef unsigned char uchar;
 #endif
 
 #define MAX_COMMENT_SIZE 2000
+#define GPS_PROCESSING_METHOD_LEN 100
 
 #ifdef _WIN32
     #define PATH_MAX _MAX_PATH
@@ -122,6 +123,7 @@ typedef struct {
     // gps-datestamp is 11 bytes ascii in EXIF 2.2
     char GpsDateStamp[11];
     char GpsTimeStamp[11];
+    char GpsProcessingMethod[GPS_PROCESSING_METHOD_LEN + 1];
 }ImageInfo_t;
 
 

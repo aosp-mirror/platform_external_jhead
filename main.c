@@ -646,14 +646,22 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
     }
 
     if (ImageInfo.GpsInfoPresent) {
-        bufLen = addKeyValueString(&buf, bufLen, "GPSLatitude", ImageInfo.GpsLatRaw);
-        if (bufLen == 0) return NULL;
-        bufLen = addKeyValueString(&buf, bufLen, "GPSLatitudeRef", ImageInfo.GpsLatRef);
-        if (bufLen == 0) return NULL;
-        bufLen = addKeyValueString(&buf, bufLen, "GPSLongitude", ImageInfo.GpsLongRaw);
-        if (bufLen == 0) return NULL;
-        bufLen = addKeyValueString(&buf, bufLen, "GPSLongitudeRef", ImageInfo.GpsLongRef);
-        if (bufLen == 0) return NULL;
+        if (ImageInfo.GpsLatRaw[0]) {
+            bufLen = addKeyValueString(&buf, bufLen, "GPSLatitude", ImageInfo.GpsLatRaw);
+            if (bufLen == 0) return NULL;
+        }
+        if (ImageInfo.GpsLatRef[0]) {
+            bufLen = addKeyValueString(&buf, bufLen, "GPSLatitudeRef", ImageInfo.GpsLatRef);
+            if (bufLen == 0) return NULL;
+        }
+        if (ImageInfo.GpsLongRaw[0]) {
+            bufLen = addKeyValueString(&buf, bufLen, "GPSLongitude", ImageInfo.GpsLongRaw);
+            if (bufLen == 0) return NULL;
+        }
+        if (ImageInfo.GpsLongRef[0]) {
+            bufLen = addKeyValueString(&buf, bufLen, "GPSLongitudeRef", ImageInfo.GpsLongRef);
+            if (bufLen == 0) return NULL;
+        }
         if (ImageInfo.GpsAlt[0]) {
             bufLen = addKeyValueString(&buf, bufLen, "GPSAltitude", ImageInfo.GpsAlt);
             if (bufLen == 0) return NULL;

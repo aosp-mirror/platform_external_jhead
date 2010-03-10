@@ -140,9 +140,6 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
     strcpy(ImageInfo.GpsLat, "? ?");
     strcpy(ImageInfo.GpsLong, "? ?");
     ImageInfo.GpsAlt[0] = 0;
-    memset(ImageInfo.GpsTimeStamp, 0, sizeof(ImageInfo.GpsTimeStamp));
-    memset(ImageInfo.GpsDateStamp, 0, sizeof(ImageInfo.GpsDateStamp));
-    memset(ImageInfo.GpsProcessingMethod, 0, sizeof(ImageInfo.GpsProcessingMethod));
 
     for (de=0;de<NumDirEntries;de++){
         unsigned Tag, Format, Components;
@@ -271,7 +268,7 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
                 break;
 
             case TAG_GPS_PROCESSING_METHOD:
-                if (ByteCount > EXIF_ASCII_PREFIX_LEN && 
+                if (ByteCount > EXIF_ASCII_PREFIX_LEN &&
                     memcmp(ValuePtr, ExifAsciiPrefix, EXIF_ASCII_PREFIX_LEN) == 0) {
                     int length =
                         ByteCount < GPS_PROCESSING_METHOD_LEN + EXIF_ASCII_PREFIX_LEN ?

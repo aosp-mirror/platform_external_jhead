@@ -140,9 +140,9 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
     strcpy(ImageInfo.GpsLat, "? ?");
     strcpy(ImageInfo.GpsLong, "? ?");
     ImageInfo.GpsAlt[0] = 0;
-    bzero(ImageInfo.GpsTimeStamp, sizeof(ImageInfo.GpsTimeStamp));
-    bzero(ImageInfo.GpsDateStamp, sizeof(ImageInfo.GpsDateStamp));
-    bzero(ImageInfo.GpsProcessingMethod, sizeof(ImageInfo.GpsProcessingMethod));
+    memset(ImageInfo.GpsTimeStamp, 0, sizeof(ImageInfo.GpsTimeStamp));
+    memset(ImageInfo.GpsDateStamp, 0, sizeof(ImageInfo.GpsDateStamp));
+    memset(ImageInfo.GpsProcessingMethod, 0, sizeof(ImageInfo.GpsProcessingMethod));
 
     for (de=0;de<NumDirEntries;de++){
         unsigned Tag, Format, Components;

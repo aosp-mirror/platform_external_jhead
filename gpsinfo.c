@@ -26,7 +26,7 @@ static TagTable_t GpsTags[]= {
     { 0x03, "GPSLongitudeRef", FMT_STRING, 2},
     { 0x04, "GPSLongitude", FMT_URATIONAL, 3},
     { 0x05, "GPSAltitudeRef", FMT_BYTE, 1},
-    { 0x06, "GPSAltitude", FMT_SRATIONAL, 1},
+    { 0x06, "GPSAltitude", FMT_URATIONAL, 1},
     { 0x07, "GPSTimeStamp", FMT_SRATIONAL, 3},
     { 0x08, "GPSSatellites", FMT_STRING, -1},
     { 0x09, "GPSStatus", FMT_STRING, 2},
@@ -247,11 +247,14 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
 
             case TAG_GPS_ALT_REF:
                 ImageInfo.GpsAlt[0] = (char)(ValuePtr[0] ? '-' : ' ');
+                ImageInfo.GpsAltRef = (char)ValuePtr[0];
                 break;
 
             case TAG_GPS_ALT:
                 sprintf(ImageInfo.GpsAlt + 1, "%.2fm", 
                     ConvertAnyFormat(ValuePtr, Format));
+                ImageInfo.GpsAltRaw.num = Get32u(ValuePtr);
+                ImageInfo.GpsAltRaw.denom = Get32u(4+(char *)ValuePtr);
                 break;
 
             case TAG_GPS_TIMESTAMP:

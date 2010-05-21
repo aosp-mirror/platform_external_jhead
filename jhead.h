@@ -120,6 +120,8 @@ typedef struct {
     char GpsLongRaw[31];
     char GpsLongRef[2];
     char GpsAlt[20];
+    rat_t GpsAltRaw;
+    char GpsAltRef;
     // gps-datestamp is 11 bytes ascii in EXIF 2.2
     char GpsDateStamp[11];
     char GpsTimeStamp[11];

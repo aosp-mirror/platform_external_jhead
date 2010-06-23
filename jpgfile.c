@@ -6,6 +6,8 @@
 //
 // Matthias Wandel
 //--------------------------------------------------------------------------
+//#define LOG_NDEBUG 0
+#define LOG_TAG "JHEAD"
 #include <utils/Log.h>
 #include "jhead.h"
 
@@ -343,7 +345,7 @@ int ReadJpegFile(const char * FileName, ReadMode_t ReadMode)
     printf("ReadJpegSections");
     ret = ReadJpegSections(infile, ReadMode);
     if (!ret){
-        LOGE("Not JPEG: %s", FileName);
+        LOGV("Cannot parse JPEG sections for file: %s", FileName);
         fprintf(stderr,"Not JPEG: %s\n",FileName);
     }
 

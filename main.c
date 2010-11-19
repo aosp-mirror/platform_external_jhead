@@ -458,6 +458,7 @@ static jbyteArray getThumbnail(JNIEnv *env, jobject jobj, jstring jfilename)
     LOGE("thumbnail size %d\n", ImageInfo.ThumbnailSize);
 #endif
         (*env)->ReleaseStringUTFChars(env, jfilename, filename);
+        DiscardData();
         return byteArray;
     }
 noThumbnail:

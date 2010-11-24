@@ -189,7 +189,7 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
 
         switch(Tag){
             char FmtString[21];
-            char TempString[50];
+            char TempString[MAX_BUF_SIZE];
             double Values[3];
 
             case TAG_GPS_LAT_REF:
@@ -239,9 +239,9 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
                     Get32s(8+(char*)ValuePtr), Get32s(12+(char*)ValuePtr),
                     Get32s(16+(char*)ValuePtr), Get32s(20+(char*)ValuePtr));
                 if (Tag == TAG_GPS_LAT){
-                    strncpy(ImageInfo.GpsLatRaw, TempString, 31);
+                    strncpy(ImageInfo.GpsLatRaw, TempString, MAX_BUF_SIZE);
                 }else{
-                    strncpy(ImageInfo.GpsLongRaw, TempString, 31);
+                    strncpy(ImageInfo.GpsLongRaw, TempString, MAX_BUF_SIZE);
                 }
                 break;
 

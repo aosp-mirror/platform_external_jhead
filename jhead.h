@@ -60,6 +60,7 @@ extern int ExifSectionIndex;
 extern int DumpExifMap;
 
 #define MAX_DATE_COPIES 10
+#define MAX_BUF_SIZE    66
 
 typedef struct {
     uint32_t num;
@@ -114,10 +115,10 @@ typedef struct {
 
     int GpsInfoPresent;
     char GpsLat[31];
-    char GpsLatRaw[31];
+    char GpsLatRaw[MAX_BUF_SIZE];
     char GpsLatRef[2];
     char GpsLong[31];
-    char GpsLongRaw[31];
+    char GpsLongRaw[MAX_BUF_SIZE];
     char GpsLongRef[2];
     char GpsAlt[20];
     // gps-datestamp is 11 bytes ascii in EXIF 2.2

@@ -576,8 +576,10 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
     bufLen = addKeyValueInt(&buf, bufLen, "Orientation", ImageInfo.Orientation);
     if (bufLen == 0) return NULL;
 
-    bufLen = addKeyValueInt(&buf, bufLen, "Flash", ImageInfo.FlashUsed);
-    if (bufLen == 0) return NULL;
+    if (ImageInfo.FlashUsed >= 0) {
+        bufLen = addKeyValueInt(&buf, bufLen, "Flash", ImageInfo.FlashUsed);
+        if (bufLen == 0) return NULL;
+    }
 
     if (ImageInfo.FocalLength.num != 0 && ImageInfo.FocalLength.denom != 0) {
         bufLen = addKeyValueRational(&buf, bufLen, "FocalLength", ImageInfo.FocalLength);
@@ -624,8 +626,10 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
         if (bufLen == 0) return NULL;
     }
 
-    bufLen = addKeyValueInt(&buf, bufLen, "WhiteBalance", ImageInfo.Whitebalance);
-    if (bufLen == 0) return NULL;
+    if (ImageInfo.Whitebalance >= 0) {
+        bufLen = addKeyValueInt(&buf, bufLen, "WhiteBalance", ImageInfo.Whitebalance);
+        if (bufLen == 0) return NULL;
+    }
 
     bufLen = addKeyValueInt(&buf, bufLen, "LightSource", ImageInfo.LightSource);
     if (bufLen == 0) return NULL;

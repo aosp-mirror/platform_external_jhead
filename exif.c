@@ -1168,12 +1168,8 @@ char* formatStr(int format) {
 // Create minimal exif header - just date and thumbnail pointers,
 // so that date and thumbnail may be filled later.
 //--------------------------------------------------------------------------
-void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
+static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int gpsTagCount, char* Buffer)
 {
-    // TODO: We need to dynamically allocate this buffer and resize it when
-    // necessary while writing so we don't do a buffer overflow.
-    char Buffer[1024];
-
     unsigned short NumEntries;
     int DataWriteIndex;
     int DirIndex;
@@ -1381,6 +1377,19 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
         // Re-parse new exif section, now that its in place
         // otherwise, we risk touching data that has already been freed.
         process_EXIF(NewBuf, DataWriteIndex);
+    }
+}
+
+void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
+{
+    const int EXIF_MAX_SIZE = sizeof(char)*1024*64;
+    char* Buffer = malloc(EXIF_MAX_SIZE);
+
+    if (Buffer != NULL) {
+        create_EXIF_internal(elements, exifTagCount, gpsTagCount, Buffer);
+        free(Buffer);
+    } else {
+        ErrFatal("Could not allocate memory");
     }
 }
 

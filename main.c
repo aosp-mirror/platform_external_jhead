@@ -35,6 +35,7 @@ SUCH DAMAGE.
 #include <nativehelper/jni.h>
 
 #include <assert.h>
+#include <ctype.h>
 #include <dlfcn.h>
 #include <stdio.h>
 #include <string.h>
@@ -701,7 +702,7 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
     snprintf(finalResult, finalBufLen, "%d %s", attributeCount, buf);
     int k;
     for (k = 0; k < finalBufLen; k++)
-        if (finalResult[k] > 127)
+        if (!isascii(finalResult[k]))
             finalResult[k] = '?';
     free(buf);
 

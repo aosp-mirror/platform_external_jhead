@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "AAABBn///kY\u003d",
+        "filename": "exif.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 1385,
+      "author": {
+        "id": 1002411
+      },
+      "writtenOn": "2011-05-26T13:47:14Z",
+      "side": 1,
+      "message": "1. Please add a comment, like this:\n\n/* It is hard to calculate exact necessary size for editing the\nexif header dynamically, so this value is changed to the\nmaximum size of EXIF, 64K. */\n\n2. Please remove \"sizeof(char)*\" (which is defined to be 1)\n\nOtherwise it looks good. Thanks!",
+      "revId": "b01cf73231d987288c02ddf3751b81493928dd6f",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

@@ -310,6 +310,195 @@ int ReadJpegSections (FILE * infile, ReadMode_t ReadMode)
 }
 
 //--------------------------------------------------------------------------
+// Parse the marker buffer until SOS or EOI is seen;
+//--------------------------------------------------------------------------
+int ReadJpegSectionsFromBuffer (unsigned char* buffer, unsigned int buffer_size, ReadMode_t ReadMode)
+{
+    int a;
+    unsigned int pos = 0;
+    int HaveCom = FALSE;
+
+    if (!buffer) {
+        return FALSE;
+    }
+
+    if (buffer_size < 1) {
+        return FALSE;
+    }
+
+    a = (int) buffer[pos++];
+
+    if (a != 0xff || buffer[pos++] != M_SOI){
+        return FALSE;
+    }
+
+    for(;;){
+        int itemlen;
+        int marker = 0;
+        int ll,lh, got;
+        uchar * Data;
+
+        CheckSectionsAllocated();
+
+        for (a=0;a<=16;a++){
+            marker = buffer[pos++];
+            if (marker != 0xff) break;
+
+            if (a >= 16){
+                fprintf(stderr,"too many padding bytes\n");
+                return FALSE;
+            }
+        }
+
+        Sections[SectionsRead].Type = marker;
+
+        // Read the length of the section.
+        lh = buffer[pos++];
+        ll = buffer[pos++];
+
+        itemlen = (lh << 8) | ll;
+
+        if (itemlen < 2) {
+            LOGE("invalid marker");
+            return FALSE;
+        }
+
+        Sections[SectionsRead].Size = itemlen;
+
+        Data = (uchar *)malloc(itemlen);
+        if (Data == NULL) {
+            LOGE("Could not allocate memory");
+            return 0;
+        }
+        Sections[SectionsRead].Data = Data;
+
+        // Store first two pre-read bytes.
+        Data[0] = (uchar)lh;
+        Data[1] = (uchar)ll;
+
+        if (pos+itemlen-2 > buffer_size) {
+           LOGE("Premature end of file?");
+          return FALSE;
+        }
+
+        memcpy(Data+2, buffer+pos, itemlen-2); // Read the whole section.
+        pos += itemlen-2;
+
+        SectionsRead += 1;
+
+        printf("reading marker %d", marker);
+        switch(marker){
+
+            case M_SOS:   // stop before hitting compressed data
+                // If reading entire image is requested, read the rest of the data.
+                if (ReadMode & READ_IMAGE){
+                    int size;
+                    // Determine how much file is left.
+                    size = buffer_size - pos;
+
+                    if (size < 1) {
+                        LOGE("could not read the rest of the image");
+                        return FALSE;
+                    }
+                    Data = (uchar *)malloc(size);
+                    if (Data == NULL) {
+                        LOGE("%d: could not allocate data for entire image size: %d", __LINE__, size);
+                        return FALSE;
+                    }
+
+                    memcpy(Data, buffer+pos, size);
+
+                    CheckSectionsAllocated();
+                    Sections[SectionsRead].Data = Data;
+                    Sections[SectionsRead].Size = size;
+                    Sections[SectionsRead].Type = PSEUDO_IMAGE_MARKER;
+                    SectionsRead ++;
+                    HaveAll = 1;
+                }
+                return TRUE;
+
+            case M_EOI:   // in case it's a tables-only JPEG stream
+                LOGE("No image in jpeg!\n");
+                return FALSE;
+
+            case M_COM: // Comment section
+                if (HaveCom || ((ReadMode & READ_METADATA) == 0)){
+                    // Discard this section.
+                    free(Sections[--SectionsRead].Data);
+                }else{
+                    process_COM(Data, itemlen);
+                    HaveCom = TRUE;
+                }
+                break;
+
+            case M_JFIF:
+                // Regular jpegs always have this tag, exif images have the exif
+                // marker instead, althogh ACDsee will write images with both markers.
+                // this program will re-create this marker on absence of exif marker.
+                // hence no need to keep the copy from the file.
+                free(Sections[--SectionsRead].Data);
+                break;
+
+            case M_EXIF:
+                // There can be different section using the same marker.
+                if (ReadMode & READ_METADATA){
+                    if (memcmp(Data+2, "Exif", 4) == 0){
+                        process_EXIF(Data, itemlen);
+                        break;
+                    }else if (memcmp(Data+2, "http:", 5) == 0){
+                        Sections[SectionsRead-1].Type = M_XMP; // Change tag for internal purposes.
+                        if (ShowTags){
+                            LOGD("Image cotains XMP section, %d bytes long\n", itemlen);
+                            if (ShowTags){
+                                ShowXmp(Sections[SectionsRead-1]);
+                            }
+                        }
+                        break;
+                    }
+                }
+                // Oterwise, discard this section.
+                free(Sections[--SectionsRead].Data);
+                break;
+
+            case M_IPTC:
+                if (ReadMode & READ_METADATA){
+                    if (ShowTags){
+                        LOGD("Image cotains IPTC section, %d bytes long\n", itemlen);
+                    }
+                    // Note: We just store the IPTC section.  Its relatively straightforward
+                    // and we don't act on any part of it, so just display it at parse time.
+                }else{
+                    free(Sections[--SectionsRead].Data);
+                }
+                break;
+
+            case M_SOF0:
+            case M_SOF1:
+            case M_SOF2:
+            case M_SOF3:
+            case M_SOF5:
+            case M_SOF6:
+            case M_SOF7:
+            case M_SOF9:
+            case M_SOF10:
+            case M_SOF11:
+            case M_SOF13:
+            case M_SOF14:
+            case M_SOF15:
+                process_SOFn(Data, marker);
+                break;
+            default:
+                // Skip any other sections.
+                if (ShowTags){
+                    LOGD("Jpeg section marker 0x%02x size %d\n",marker, itemlen);
+                }
+                break;
+        }
+    }
+    return TRUE;
+}
+
+//--------------------------------------------------------------------------
 // Discard read data.
 //--------------------------------------------------------------------------
 void DiscardData(void)
@@ -582,6 +771,70 @@ int WriteJpegFile(const char * FileName)
     }
        
     fclose(outfile);
+    return writeOk;
+}
+
+//--------------------------------------------------------------------------
+// Write image to a buffer
+//--------------------------------------------------------------------------
+int WriteJpegToBuffer(unsigned char* buffer, unsigned int buffer_size)
+{
+    unsigned int pos = 0;
+    int a;
+
+    if (!buffer) {
+        return FALSE;
+    }
+
+    if (buffer_size < 1) {
+        return FALSE;
+    }
+
+    if (!HaveAll){
+        LOGE("Can't write back - didn't read all");
+        return FALSE;
+    }
+
+    // Initial static jpeg marker.
+    buffer[pos++] = 0xff;
+    buffer[pos++] = 0xd8;
+
+    if (Sections[0].Type != M_EXIF && Sections[0].Type != M_JFIF){
+        // The image must start with an exif or jfif marker.  If we threw those away, create one.
+        static uchar JfifHead[18] = {
+            0xff, M_JFIF,
+            0x00, 0x10, 'J' , 'F' , 'I' , 'F' , 0x00, 0x01,
+            0x01, 0x01, 0x01, 0x2C, 0x01, 0x2C, 0x00, 0x00
+        };
+        memcpy(buffer+pos, JfifHead, 18);
+        pos+= 18;
+    }
+
+    int writeOk = FALSE;
+    int nWrite = 0;
+    // Write all the misc sections
+    for (a=0;a<SectionsRead-1;a++){
+        buffer[pos++] = 0xff;
+        buffer[pos++] = (unsigned char) Sections[a].Type;
+        if (pos+Sections[a].Size > buffer_size) {
+            writeOk = FALSE;
+            break;
+        }
+        memcpy(buffer+pos, Sections[a].Data, Sections[a].Size);
+        pos += Sections[a].Size;
+        writeOk = TRUE;
+    }
+
+    // Write the remaining image data.
+    if (writeOk){
+        if (pos+Sections[a].Size > buffer_size) {
+            writeOk = FALSE;
+        } else {
+            memcpy(buffer+pos, Sections[a].Data, Sections[a].Size);
+            pos += Sections[a].Size;
+            writeOk = TRUE;
+        }
+    }
     return writeOk;
 }
 

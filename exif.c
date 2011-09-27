@@ -1173,7 +1173,7 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
     unsigned short NumEntries;
     int DataWriteIndex;
     int DirIndex;
-    int DirContinuation = 0;
+    int DirExifLink = 0;
 
 #ifdef SUPERDEBUG
     LOGE("create_EXIF %d exif elements, %d gps elements", exifTagCount, gpsTagCount);
@@ -1261,7 +1261,7 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
             if (gpsTagCount) {
                 exifDirPtr += 2 + gpsTagCount*12 + 4;
             }
-            DirContinuation = DirIndex;
+            DirExifLink = DirIndex;
             writeExifTagAndData(TAG_EXIF_OFFSET,
                                 FMT_ULONG,
                                 1,
@@ -1273,7 +1273,7 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
         }
 
         // End of directory - contains optional link to continued directory.
-        DirContinuation = DirIndex;
+        Put32u(Buffer+DirIndex, 0);
         printf("Ending Exif section DirIndex = %d DataWriteIndex %d", DirIndex, DataWriteIndex);
     }
 
@@ -1317,8 +1317,8 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
     }
 
     {
-        //Continuation which links to this directory;
-        Put32u(Buffer+DirContinuation, DataWriteIndex-8);
+        // Overwriting TAG_EXIF_OFFSET which links to this directory
+        Put32u(Buffer+DirExifLink+8, DataWriteIndex-8);
 
         printf("Starting Thumbnail section DirIndex = %d", DirIndex);
         DirIndex = DataWriteIndex;

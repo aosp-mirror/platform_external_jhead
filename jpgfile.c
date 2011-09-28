@@ -586,6 +586,70 @@ int SaveThumbnail(char * ThumbFileName)
 //--------------------------------------------------------------------------
 // Replace or remove exif thumbnail
 //--------------------------------------------------------------------------
+int ReplaceThumbnailFromBuffer(const char * Thumb, int ThumbLen)
+{
+    int NewExifSize;
+    Section_t * ExifSection;
+    uchar * ThumbnailPointer;
+
+    if (ImageInfo.ThumbnailOffset == 0 || ImageInfo.ThumbnailAtEnd == FALSE){
+        if (Thumb == NULL){
+            // Delete of nonexistent thumbnail (not even pointers present)
+            // No action, no error.
+            return FALSE;
+        }
+
+        // Adding or removing of thumbnail is not possible - that would require rearranging
+        // of the exif header, which is risky, and jhad doesn't know how to do.
+        fprintf(stderr,"Image contains no thumbnail to replace - add is not possible\n");
+#ifdef SUPERDEBUG
+        LOGE("Image contains no thumbnail to replace - add is not possible\n");
+#endif
+        return FALSE;
+    }
+
+    if (Thumb) {
+        if (ThumbLen + ImageInfo.ThumbnailOffset > 0x10000-20){
+	        //ErrFatal("Thumbnail is too large to insert into exif header");
+	        LOGE("Thumbnail is too large to insert into exif header");
+	        return FALSE;
+        }
+    } else {
+        if (ImageInfo.ThumbnailSize == 0){
+             return FALSE;
+        }
+
+        ThumbLen = 0;
+    }
+
+    ExifSection = FindSection(M_EXIF);
+
+    NewExifSize = ImageInfo.ThumbnailOffset+8+ThumbLen;
+    ExifSection->Data = (uchar *)realloc(ExifSection->Data, NewExifSize);
+
+    ThumbnailPointer = ExifSection->Data+ImageInfo.ThumbnailOffset+8;
+
+    if (Thumb){
+        memcpy(ThumbnailPointer, Thumb, ThumbLen);
+    }
+
+    ImageInfo.ThumbnailSize = ThumbLen;
+
+    Put32u(ExifSection->Data+ImageInfo.ThumbnailSizeOffset+8, ThumbLen);
+
+    ExifSection->Data[0] = (uchar)(NewExifSize >> 8);
+    ExifSection->Data[1] = (uchar)NewExifSize;
+    ExifSection->Size = NewExifSize;
+
+#ifdef SUPERDEBUG
+        LOGE("ReplaceThumbnail successful thumblen %d", ThumbLen);
+#endif
+    return TRUE;
+}
+
+//--------------------------------------------------------------------------
+// Replace or remove exif thumbnail
+//--------------------------------------------------------------------------
 int ReplaceThumbnail(const char * ThumbFileName)
 {
     FILE * ThumbnailFile;

@@ -47,13 +47,11 @@ static TagTable_t GpsTags[]= {
     { 0x18, "GPSDestBearing", FMT_SRATIONAL, 1},
     { 0x19, "GPSDestDistanceRef", FMT_STRING, 2},
     { 0x1A, "GPSDestDistance", FMT_SRATIONAL, 1},
-    { 0x1B, "GPSProcessingMethod", FMT_STRING, -1},
+    { 0x1B, "GPSProcessingMethod", FMT_UNDEFINED, -1},
     { 0x1C, "GPSAreaInformation", FMT_STRING, -1},
     { 0x1D, "GPSDateStamp", FMT_STRING, 11},
     { 0x1E, "GPSDifferential", FMT_SSHORT, 1},
 };
-
-static const char ExifAsciiPrefix[] = { 0x41, 0x53, 0x43, 0x49, 0x49, 0x0, 0x0, 0x0 };
 
 #define MAX_GPS_TAG  (sizeof(GpsTags) / sizeof(TagTable_t))
 #define EXIF_ASCII_PREFIX_LEN (sizeof(ExifAsciiPrefix))

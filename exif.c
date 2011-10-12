@@ -1091,6 +1091,15 @@ static void writeExifTagAndData(int tag,
         components = strlen((char*)value) + 1;                 // account for null terminator
         if (components & 1) ++components;               // no odd lengths
     }
+    if (format == FMT_UNDEFINED && components == -1) {
+        // check if this UNDEFINED format is actually ASCII (as it usually is)
+        // if so, we can calculate the size
+        if(memcmp((char*)value, ExifAsciiPrefix, sizeof(ExifAsciiPrefix)) == 0) {
+            components = sizeof(ExifAsciiPrefix) +
+                         strlen((char*)value + sizeof(ExifAsciiPrefix)) + 1;
+            if (components & 1) ++components;               // no odd lengths
+        }
+    }
     Put32u(Buffer+(*DirIndex) + 4, components);         // Components
     printf("# components: %ld", components);
     if (format == FMT_STRING) {
@@ -1102,6 +1111,18 @@ static void writeExifTagAndData(int tag,
             Put32u(Buffer+(*DirIndex) + 8, (*DataWriteIndex)-8);   // Pointer
             printf("copying value %s to %d", (char*)value, (*DataWriteIndex));
             strncpy(Buffer+(*DataWriteIndex), (char*)value, components);
+            (*DataWriteIndex) += components;
+        }
+    } else if ((format == FMT_UNDEFINED) &&
+               (memcmp((char*)value, ExifAsciiPrefix, sizeof(ExifAsciiPrefix)) == 0)) {
+        // short strings can fit right in the long, otherwise have to
+        // go in the data area
+        if (components <= 4) {
+            memcpy(Buffer+(*DirIndex) + 8, (char*)value, components);
+        } else {
+            Put32u(Buffer+(*DirIndex) + 8, (*DataWriteIndex)-8);   // Pointer
+            printf("copying %s to %d", (char*)value + sizeof(ExifAsciiPrefix), (*DataWriteIndex));
+            memcpy(Buffer+(*DataWriteIndex), (char*)value, components);
             (*DataWriteIndex) += components;
         }
     } else if (!valueInString) {

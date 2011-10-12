@@ -209,6 +209,7 @@ int IsGpsTag(const char* tag);
 int GpsTagToFormatType(unsigned short tag);
 int GpsTagNameToValue(const char* tagName);
 TagTable_t* GpsTagToTagTableEntry(unsigned short tag);
+static const char ExifAsciiPrefix[] = { 0x41, 0x53, 0x43, 0x49, 0x49, 0x0, 0x0, 0x0 };
 
 // iptc.c prototpyes
 void show_IPTC (unsigned char * CharBuf, unsigned int length);

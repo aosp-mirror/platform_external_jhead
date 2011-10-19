@@ -231,7 +231,7 @@ static const TagTable_t TagTable[] = {
   { TAG_CFA_PATTERN1,           "CFAPattern", 0, 0},
   { TAG_BATTERY_LEVEL,          "BatteryLevel", 0, 0},
   { TAG_COPYRIGHT,              "Copyright", FMT_STRING, -1},
-  { TAG_EXPOSURETIME,           "ExposureTime", FMT_USHORT, 1},
+  { TAG_EXPOSURETIME,           "ExposureTime", FMT_SRATIONAL, 1},
   { TAG_FNUMBER,                "FNumber", FMT_SRATIONAL, 1},
   { TAG_IPTC_NAA,               "IPTC/NAA", 0, 0},
   { TAG_EXIF_OFFSET,            "ExifOffset", 0, 0},
@@ -1085,6 +1085,8 @@ static void writeExifTagAndData(int tag,
                                 char* Buffer,
                                 int* DirIndex,
                                 int* DataWriteIndex) {
+    void* componentsPosition = NULL; // for saving component position
+
     Put16u(Buffer+ (*DirIndex), tag);                    // Tag
     Put16u(Buffer+(*DirIndex) + 2, format);              // Format
     if (format == FMT_STRING && components == -1) {
@@ -1101,6 +1103,7 @@ static void writeExifTagAndData(int tag,
         }
     }
     Put32u(Buffer+(*DirIndex) + 4, components);         // Components
+    componentsPosition = Buffer+(*DirIndex) + 4; // components # can change for lists
     printf("# components: %ld", components);
     if (format == FMT_STRING) {
         // short strings can fit right in the long, otherwise have to
@@ -1161,6 +1164,7 @@ static void writeExifTagAndData(int tag,
             }
             curElement = strtok(NULL, ",");
         }
+        if (components == -1) Put32u(componentsPosition, i); // update component # for unknowns
     }
     (*DirIndex) += 12;
 }

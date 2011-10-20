@@ -534,7 +534,7 @@ int ReadJpegFile(const char * FileName, ReadMode_t ReadMode)
     printf("ReadJpegSections");
     ret = ReadJpegSections(infile, ReadMode);
     if (!ret){
-        LOGV("Cannot parse JPEG sections for file: %s", FileName);
+        ALOGV("Cannot parse JPEG sections for file: %s", FileName);
         fprintf(stderr,"Not JPEG: %s\n",FileName);
     }
 

@@ -115,8 +115,8 @@ void ErrFatal(char * msg)
 //--------------------------------------------------------------------------
 void ErrNonfatal(char * msg, int a1, int a2)
 {
-    LOGV("Nonfatal Error : ");
-    LOGV(msg, a1, a2);
+    ALOGV("Nonfatal Error : ");
+    ALOGV(msg, a1, a2);
     if (SupressNonFatalErrors) return;
 
     fprintf(stderr,"\nNonfatal Error : ");

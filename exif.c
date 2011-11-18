@@ -1134,7 +1134,9 @@ static void writeExifTagAndData(int tag,
         Put32u(Buffer+(*DirIndex) + 8, (*DataWriteIndex)-8);   // Pointer
         char* curElement = strtok((char*)value, ",");
         int i;
-        for (i = 0; i < components && curElement != NULL; i++) {
+
+        // (components == -1) Need to handle lists with unknown length too
+        for (i = 0; ((i < components) || (components == -1)) && curElement != NULL; i++) {
 #ifdef SUPERDEBUG
             printf("processing component %s format %s", curElement, formatStr(format));
 #endif
@@ -1157,6 +1159,11 @@ static void writeExifTagAndData(int tag,
                     Put32u(Buffer+(*DataWriteIndex) + 4, denominator);
                     (*DataWriteIndex) += 8;
                 }
+            } else if ((components == -1) && ((format == FMT_USHORT) || (format == FMT_SSHORT))) {
+                // variable components need to go into data write area
+                value = atoi(curElement);
+                Put16u(Buffer+(*DataWriteIndex), value);
+                (*DataWriteIndex) += 4;
             } else {
                 // TODO: doesn't handle multiple components yet -- if more than one, have to put in data write area.
                 value = atoi(curElement);

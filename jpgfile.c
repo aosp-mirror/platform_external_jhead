@@ -448,7 +448,7 @@ int ReadJpegSectionsFromBuffer (unsigned char* buffer, unsigned int buffer_size,
                     }else if (memcmp(Data+2, "http:", 5) == 0){
                         Sections[SectionsRead-1].Type = M_XMP; // Change tag for internal purposes.
                         if (ShowTags){
-                            LOGD("Image cotains XMP section, %d bytes long\n", itemlen);
+                            ALOGD("Image cotains XMP section, %d bytes long\n", itemlen);
                             if (ShowTags){
                                 ShowXmp(Sections[SectionsRead-1]);
                             }
@@ -463,7 +463,7 @@ int ReadJpegSectionsFromBuffer (unsigned char* buffer, unsigned int buffer_size,
             case M_IPTC:
                 if (ReadMode & READ_METADATA){
                     if (ShowTags){
-                        LOGD("Image cotains IPTC section, %d bytes long\n", itemlen);
+                        ALOGD("Image cotains IPTC section, %d bytes long\n", itemlen);
                     }
                     // Note: We just store the IPTC section.  Its relatively straightforward
                     // and we don't act on any part of it, so just display it at parse time.
@@ -490,7 +490,7 @@ int ReadJpegSectionsFromBuffer (unsigned char* buffer, unsigned int buffer_size,
             default:
                 // Skip any other sections.
                 if (ShowTags){
-                    LOGD("Jpeg section marker 0x%02x size %d\n",marker, itemlen);
+                    ALOGD("Jpeg section marker 0x%02x size %d\n",marker, itemlen);
                 }
                 break;
         }

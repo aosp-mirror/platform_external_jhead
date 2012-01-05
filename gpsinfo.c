@@ -278,7 +278,7 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
                         (char*)(ValuePtr + EXIF_ASCII_PREFIX_LEN), length);
                     ImageInfo.GpsProcessingMethod[length] = 0;
                 } else {
-                    LOGW("Unsupported encoding for GPSProcessingMethod");
+                    ALOGW("Unsupported encoding for GPSProcessingMethod");
                 }
                 break;
         }

@@ -104,7 +104,7 @@ static int ShowFileInfo = TRUE;     // Indicates to show standard file info
 //--------------------------------------------------------------------------
 void ErrFatal(char * msg)
 {
-    LOGE("Error : %s\n", msg);
+    ALOGE("Error : %s\n", msg);
     if (CurrentFile) fprintf(stderr,"in file '%s'\n",CurrentFile);
     exit(EXIT_FAILURE);
 } 

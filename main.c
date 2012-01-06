@@ -69,7 +69,7 @@ extern void ResetJpgfile();
 
 static int loadExifInfo(const char* FileName, int readJPG) {
 #ifdef SUPERDEBUG
-    LOGE("loadExifInfo");
+    ALOGE("loadExifInfo");
 #endif
     int Modified = FALSE;
     ReadMode_t ReadMode = READ_METADATA;
@@ -79,7 +79,7 @@ static int loadExifInfo(const char* FileName, int readJPG) {
     }
 
 #ifdef SUPERDEBUG
-    LOGE("ResetJpgfile");
+    ALOGE("ResetJpgfile");
 #endif
     ResetJpgfile();
 
@@ -100,7 +100,7 @@ static int loadExifInfo(const char* FileName, int readJPG) {
 
     strncpy(ImageInfo.FileName, FileName, PATH_MAX);
 #ifdef SUPERDEBUG
-    LOGE("ReadJpegFile");
+    ALOGE("ReadJpegFile");
 #endif
     return ReadJpegFile(FileName, ReadMode);
 }
@@ -110,7 +110,7 @@ static void saveJPGFile(const char* filename) {
     struct stat buf;
 
 #ifdef SUPERDEBUG
-    LOGE("Modified: %s\n", filename);
+    ALOGE("Modified: %s\n", filename);
 #endif
 
     strncpy(backupName, filename, 395);
@@ -118,25 +118,25 @@ static void saveJPGFile(const char* filename) {
 
     // Remove any .old file name that may pre-exist
 #ifdef SUPERDEBUG
-    LOGE("removing backup %s", backupName);
+    ALOGE("removing backup %s", backupName);
 #endif
     unlink(backupName);
 
     // Rename the old file.
 #ifdef SUPERDEBUG
-    LOGE("rename %s to %s", filename, backupName);
+    ALOGE("rename %s to %s", filename, backupName);
 #endif
     rename(filename, backupName);
 
     // Write the new file.
 #ifdef SUPERDEBUG
-    LOGE("WriteJpegFile %s", filename);
+    ALOGE("WriteJpegFile %s", filename);
 #endif
     if (WriteJpegFile(filename)) {
 
         // Copy the access rights from original file
 #ifdef SUPERDEBUG
-        LOGE("stating old file %s", backupName);
+        ALOGE("stating old file %s", backupName);
 #endif
         if (stat(backupName, &buf) == 0){
             // set Unix access rights and time to new file
@@ -151,15 +151,15 @@ static void saveJPGFile(const char* filename) {
 
         // Now that we are done, remove original file.
 #ifdef SUPERDEBUG
-        LOGE("unlinking old file %s", backupName);
+        ALOGE("unlinking old file %s", backupName);
 #endif
         unlink(backupName);
 #ifdef SUPERDEBUG
-        LOGE("returning from saveJPGFile");
+        ALOGE("returning from saveJPGFile");
 #endif
     } else {
 #ifdef SUPERDEBUG
-        LOGE("WriteJpegFile failed, restoring from backup file");
+        ALOGE("WriteJpegFile failed, restoring from backup file");
 #endif
         // move back the backup file
         rename(backupName, filename);
@@ -168,7 +168,7 @@ static void saveJPGFile(const char* filename) {
 
 void copyThumbnailData(uchar* thumbnailData, int thumbnailLen) {
 #ifdef SUPERDEBUG
-    LOGE("******************************** copyThumbnailData\n");
+    ALOGE("******************************** copyThumbnailData\n");
 #endif
     Section_t* ExifSection = FindSection(M_EXIF);
     if (ExifSection == NULL) {
@@ -195,7 +195,7 @@ void copyThumbnailData(uchar* thumbnailData, int thumbnailLen) {
 static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring jattributes)
 {
 #ifdef SUPERDEBUG
-    LOGE("******************************** saveAttributes\n");
+    ALOGE("******************************** saveAttributes\n");
 #endif
     // format of attributes string passed from java:
     // "attrCnt attr1=valueLen value1attr2=value2Len value2..."
@@ -209,14 +209,14 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
         goto exit;
     }
 #ifdef SUPERDEBUG
-    LOGE("attributes %s\n", attributes);
+    ALOGE("attributes %s\n", attributes);
 #endif
 
     // Get the number of attributes - it's the first number in the string.
     attrCnt = atoi(attributes);
     char* attrPtr = strchr(attributes, ' ') + 1;
 #ifdef SUPERDEBUG
-    LOGE("attribute count %d attrPtr %s\n", attrCnt, attrPtr);
+    ALOGE("attribute count %d attrPtr %s\n", attrCnt, attrPtr);
 #endif
 
     // Load all the hash exif elements into a more c-like structure
@@ -239,13 +239,13 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
         char* tagEnd = strchr(attrPtr, '=');
         if (tagEnd == 0) {
 #ifdef SUPERDEBUG
-            LOGE("saveAttributes: couldn't find end of tag");
+            ALOGE("saveAttributes: couldn't find end of tag");
 #endif
             goto exit;
         }
         if (tagEnd - attrPtr > 99) {
 #ifdef SUPERDEBUG
-            LOGE("saveAttributes: attribute tag way too long");
+            ALOGE("saveAttributes: attribute tag way too long");
 #endif
             goto exit;
         }
@@ -268,7 +268,7 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
         attrPtr = strchr(attrPtr, ' ') + 1;
         if (attrPtr == 0) {
 #ifdef SUPERDEBUG
-            LOGE("saveAttributes: couldn't find end of value len");
+            ALOGE("saveAttributes: couldn't find end of value len");
 #endif
             goto exit;
         }
@@ -283,14 +283,14 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
         attrPtr += valueLen;
 
 #ifdef SUPERDEBUG
-        LOGE("tag %s id %d value %s data length=%d isGps=%d", tag, exifElementTable[i].Tag,
+        ALOGE("tag %s id %d value %s data length=%d isGps=%d", tag, exifElementTable[i].Tag,
             exifElementTable[i].Value, exifElementTable[i].DataLength, exifElementTable[i].GpsTag);
 #endif
     }
 
     filename = (*env)->GetStringUTFChars(env, jfilename, NULL);
 #ifdef SUPERDEBUG
-    LOGE("Call loadAttributes() with filename is %s. Loading exif info\n", filename);
+    ALOGE("Call loadAttributes() with filename is %s. Loading exif info\n", filename);
 #endif
     loadExifInfo(filename, TRUE);
 
@@ -298,7 +298,7 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
 //    DumpExifMap = TRUE;
     ShowTags = TRUE;
     ShowImageInfo(TRUE);
-    LOGE("create exif 2");
+    ALOGE("create exif 2");
 #endif
 
     // If the jpg file has a thumbnail, preserve it.
@@ -323,7 +323,7 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
 
 exit:
 #ifdef SUPERDEBUG
-    LOGE("cleaning up now in saveAttributes");
+    ALOGE("cleaning up now in saveAttributes");
 #endif
     // try to clean up resources
     if (attributes) {
@@ -343,7 +343,7 @@ exit:
         free(thumbnailData);
     }
 #ifdef SUPERDEBUG
-    LOGE("returning from saveAttributes");
+    ALOGE("returning from saveAttributes");
 #endif
 
 // Temporarily saving these commented out lines because they represent a lot of figuring out
@@ -390,7 +390,7 @@ exit:
 static jboolean appendThumbnail(JNIEnv *env, jobject jobj, jstring jfilename, jstring jthumbnailfilename)
 {
 #ifdef SUPERDEBUG
-    LOGE("******************************** appendThumbnail\n");
+    ALOGE("******************************** appendThumbnail\n");
 #endif
 
     const char* filename = (*env)->GetStringUTFChars(env, jfilename, NULL);
@@ -402,7 +402,7 @@ static jboolean appendThumbnail(JNIEnv *env, jobject jobj, jstring jfilename, js
         return JNI_FALSE;
     }
  #ifdef SUPERDEBUG
-     LOGE("*******before actual call to ReplaceThumbnail\n");
+     ALOGE("*******before actual call to ReplaceThumbnail\n");
      ShowImageInfo(TRUE);
  #endif
     ReplaceThumbnail(thumbnailfilename);
@@ -419,7 +419,7 @@ static jboolean appendThumbnail(JNIEnv *env, jobject jobj, jstring jfilename, js
 static void commitChanges(JNIEnv *env, jobject jobj, jstring jfilename)
 {
 #ifdef SUPERDEBUG
-    LOGE("******************************** commitChanges\n");
+    ALOGE("******************************** commitChanges\n");
 #endif
     const char* filename = (*env)->GetStringUTFChars(env, jfilename, NULL);
     if (filename) {
@@ -432,7 +432,7 @@ static void commitChanges(JNIEnv *env, jobject jobj, jstring jfilename)
 static jbyteArray getThumbnail(JNIEnv *env, jobject jobj, jstring jfilename)
 {
 #ifdef SUPERDEBUG
-    LOGE("******************************** getThumbnail\n");
+    ALOGE("******************************** getThumbnail\n");
 #endif
 
     const char* filename = (*env)->GetStringUTFChars(env, jfilename, NULL);
@@ -441,7 +441,7 @@ static jbyteArray getThumbnail(JNIEnv *env, jobject jobj, jstring jfilename)
         Section_t* ExifSection = FindSection(M_EXIF);
         if (ExifSection == NULL ||  ImageInfo.ThumbnailSize == 0) {
 #ifdef SUPERDEBUG
-    LOGE("no exif section or size == 0, so no thumbnail\n");
+    ALOGE("no exif section or size == 0, so no thumbnail\n");
 #endif
             goto noThumbnail;
         }
@@ -450,13 +450,13 @@ static jbyteArray getThumbnail(JNIEnv *env, jobject jobj, jstring jfilename)
         jbyteArray byteArray = (*env)->NewByteArray(env, ImageInfo.ThumbnailSize);
         if (byteArray == NULL) {
 #ifdef SUPERDEBUG
-    LOGE("couldn't allocate thumbnail memory, so no thumbnail\n");
+    ALOGE("couldn't allocate thumbnail memory, so no thumbnail\n");
 #endif
             goto noThumbnail;
         }
         (*env)->SetByteArrayRegion(env, byteArray, 0, ImageInfo.ThumbnailSize, thumbnailPointer);
 #ifdef SUPERDEBUG
-    LOGE("thumbnail size %d\n", ImageInfo.ThumbnailSize);
+    ALOGE("thumbnail size %d\n", ImageInfo.ThumbnailSize);
 #endif
         (*env)->ReleaseStringUTFChars(env, jfilename, filename);
         DiscardData();
@@ -485,7 +485,7 @@ static int addKeyValueString(char** buf, int bufLen, const char* key, const char
     if (newLen >= bufLen) {
 #ifdef REALLOCTEST
         bufLen = newLen + 5;
-        LOGE("reallocing to %d", bufLen);
+        ALOGE("reallocing to %d", bufLen);
 #else
         bufLen = newLen + 500;
 #endif
@@ -497,7 +497,7 @@ static int addKeyValueString(char** buf, int bufLen, const char* key, const char
     // append the new attribute and value
     snprintf(*buf + strlen(*buf), bufLen, "%s%s%s", key, valueLen, value);
 #ifdef SUPERDEBUG
-    LOGE("buf %s", *buf);
+    ALOGE("buf %s", *buf);
 #endif
     ++attributeCount;
     return bufLen;
@@ -529,7 +529,7 @@ static int addKeyValueRational(char** buf, int bufLen, const char* key, rat_t va
 static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
 {
 #ifdef SUPERDEBUG
-    LOGE("******************************** getAttributes\n");
+    ALOGE("******************************** getAttributes\n");
 #endif
     const char* filename = (*env)->GetStringUTFChars(env, jfilename, NULL);
     loadExifInfo(filename, FALSE);
@@ -707,7 +707,7 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
     free(buf);
 
 #ifdef SUPERDEBUG
-    LOGE("*********Returning result \"%s\"", finalResult);
+    ALOGE("*********Returning result \"%s\"", finalResult);
 #endif
     jstring result = ((*env)->NewStringUTF(env, finalResult));
     free(finalResult);

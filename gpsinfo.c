@@ -60,7 +60,7 @@ static TagTable_t GpsTags[]= {
 #undef SUPERDEBUG
 
 #ifdef SUPERDEBUG
-#define printf LOGE
+#define printf ALOGE
 #endif
 
 

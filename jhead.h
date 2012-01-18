@@ -176,7 +176,7 @@ int Get16u(void * Short);
 unsigned Get32u(void * Long);
 int Get32s(void * Long);
 void Put32u(void * Value, unsigned PutValue);
-void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount, int hasDateTimeTag);
+void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount);
 int TagNameToValue(const char* tagName);
 
 //--------------------------------------------------------------------------
@@ -277,3 +277,5 @@ extern char* formatStr(int format);
 #define M_DHT   0xC4
 #define M_DRI   0xDD
 #define M_IPTC  0xED          // IPTC marker
+
+

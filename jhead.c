@@ -911,7 +911,7 @@ void ProcessFile(const char * FileName)
 
     if (CreateExifSection){
         // Make a new minimal exif section
-        create_EXIF(NULL, 0, 0);
+        create_EXIF(NULL, 0, 0, 0);
         Modified = TRUE;
     }
 
@@ -1696,4 +1696,3 @@ int main (int argc, char **argv)
 #endif
 
 #endif   // commented out -- security risk
-

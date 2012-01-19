@@ -311,6 +311,11 @@ int TagNameToValue(const char* tagName)
     return -1;
 }
 
+int IsDateTimeTag(unsigned short tag)
+{
+    return ((tag == TAG_DATETIME)? TRUE: FALSE);
+}
+
 //--------------------------------------------------------------------------
 // Convert a 16 bit unsigned value to file's native byte order
 //--------------------------------------------------------------------------
@@ -1200,7 +1205,7 @@ char* formatStr(int format) {
 // Create minimal exif header - just date and thumbnail pointers,
 // so that date and thumbnail may be filled later.
 //--------------------------------------------------------------------------
-static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int gpsTagCount, char* Buffer)
+static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int gpsTagCount, int hasDateTimeTag, char* Buffer)
 {
     unsigned short NumEntries;
     int DataWriteIndex;
@@ -1221,9 +1226,14 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
 
     {
         DirIndex = DataWriteIndex;
-        NumEntries = 2 + exifTagCount;  // the two extra are the datetime and the thumbnail
+        NumEntries = 1 + exifTagCount;  // the extra is the thumbnail
         if (gpsTagCount) {
             ++NumEntries;       // allow for the GPS info tag
+        }
+        if (!hasDateTimeTag) {
+            // We have to write extra date time tag. The entry number should be
+            // adjusted.
+            ++NumEntries;
         }
         DataWriteIndex += 2 + NumEntries*12 + 4;
 
@@ -1231,11 +1241,11 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
         DirIndex += 2;
   
         // Entries go here...
-        {
+        if (!hasDateTimeTag) {
             // Date/time entry
             char* dateTime = NULL;
             char dateBuf[20];
-            if (ImageInfo.numDateTimeTags){
+            if (ImageInfo.numDateTimeTags) {
                 // If we had a pre-existing exif header, use time from that.
                 dateTime = ImageInfo.DateTime;
             } else {
@@ -1275,7 +1285,7 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
                                     &DirIndex,
                                     &DataWriteIndex);
             }
-        
+
             if (gpsTagCount) {
                 // Link to gps dir entry
                 writeExifTagAndData(TAG_GPSINFO,
@@ -1412,7 +1422,7 @@ static void create_EXIF_internal(ExifElement_t* elements, int exifTagCount, int 
     }
 }
 
-void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
+void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount, int hasDateTimeTag)
 {
     // It is hard to calculate exact necessary size for editing the exif
     // header dynamically, so we are using the maximum size of EXIF, 64K
@@ -1420,7 +1430,7 @@ void create_EXIF(ExifElement_t* elements, int exifTagCount, int gpsTagCount)
     char* Buffer = malloc(EXIF_MAX_SIZE);
 
     if (Buffer != NULL) {
-        create_EXIF_internal(elements, exifTagCount, gpsTagCount, Buffer);
+        create_EXIF_internal(elements, exifTagCount, gpsTagCount, hasDateTimeTag, Buffer);
         free(Buffer);
     } else {
         ErrFatal("Could not allocate memory");

@@ -230,6 +230,7 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
 
     int i;
     char tag[100];
+    int hasDateTimeTag = FALSE;
     int gpsTagCount = 0;
     int exifTagCount = 0;
 
@@ -262,6 +263,10 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
             ++exifTagCount;
         }
         attrPtr = tagEnd + 1;
+
+        if (IsDateTimeTag(exifElementTable[i].Tag)) {
+            hasDateTimeTag = TRUE;
+        }
 
         // next get the length of the attribute value
         int valueLen = atoi(attrPtr);
@@ -315,7 +320,7 @@ static void saveAttributes(JNIEnv *env, jobject jobj, jstring jfilename, jstring
         }
     }
 
-    create_EXIF(exifElementTable, exifTagCount, gpsTagCount);
+    create_EXIF(exifElementTable, exifTagCount, gpsTagCount, hasDateTimeTag);
 
     if (thumbnailData) {
         copyThumbnailData(thumbnailData, thumbnailLength);

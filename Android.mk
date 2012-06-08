@@ -15,12 +15,14 @@
 #
 LOCAL_PATH := $(my-dir)
 
+#########################################
+# non-jni part
+
 include $(CLEAR_VARS)
 
-LOCAL_MODULE_TAGS := user
+LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES:= \
-	main.c \
 	exif.c \
 	gpsinfo.c \
 	iptc.c \
@@ -31,8 +33,32 @@ LOCAL_SRC_FILES:= \
 LOCAL_MODULE := libexif
 
 LOCAL_SHARED_LIBRARIES := \
-	libnativehelper \
 	libcutils \
 	libutils
 
 include $(BUILD_SHARED_LIBRARY)
+
+#########################################
+# jni part
+
+# allow jni build if java is supported, necessary for PDK
+ifneq ($(TARGET_BUILD_JAVA_SUPPORT_LEVEL),)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_SRC_FILES:= \
+	main.c
+
+LOCAL_MODULE := libexif_jni
+
+LOCAL_SHARED_LIBRARIES := \
+	libnativehelper \
+	libcutils \
+	libutils \
+	libexif
+
+include $(BUILD_SHARED_LIBRARY)
+
+endif # JAVA_SUPPORT

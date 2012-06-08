@@ -61,6 +61,11 @@ extern int DumpExifMap;
 
 #define MAX_DATE_COPIES 10
 
+// Buffer size must large enough to hold maximum location string
+// containing six signed integers plus delimeters and terminator,
+// i.e.: 11 * 6 + 3(‘/’) + 2(’,’) + 1(\0) = 72
+#define MAX_BUF_SIZE    72
+
 typedef struct {
     uint32_t num;
     uint32_t denom;
@@ -114,10 +119,10 @@ typedef struct {
 
     int GpsInfoPresent;
     char GpsLat[31];
-    char GpsLatRaw[31];
+    char GpsLatRaw[MAX_BUF_SIZE];
     char GpsLatRef[2];
     char GpsLong[31];
-    char GpsLongRaw[31];
+    char GpsLongRaw[MAX_BUF_SIZE];
     char GpsLongRef[2];
     char GpsAlt[20];
     rat_t GpsAltRaw;

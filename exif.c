@@ -462,6 +462,82 @@ double ConvertAnyFormat(void * ValuePtr, int Format)
 }
 
 //--------------------------------------------------------------------------
+// Convert a double value into a signed or unsigned rational number.
+//--------------------------------------------------------------------------
+static void float2urat(double value, unsigned int max, unsigned int *numerator,
+                       unsigned int *denominator) {
+    if (value <= 0) {
+        *numerator = 0;
+        *denominator = 1;
+        return;
+    }
+
+    if (value > max) {
+        *numerator = max;
+        *denominator = 1;
+        return;
+    }
+
+    // For values less than 1e-9, scale as much as possible
+    if (value < 1e-9) {
+        unsigned int n = (unsigned int)(value * max);
+        if (n == 0) {
+            *numerator = 0;
+            *denominator = 1;
+        } else {
+            *numerator = n;
+            *denominator = max;
+        }
+        return;
+    }
+
+    // Try to use a denominator of 1e9, 1e8, ..., until the numerator fits
+    unsigned int d;
+    for (d = 1000000000; d >= 1; d /= 10) {
+        double s = value * d;
+        if (s <= max) {
+            // Remove the trailing zeros from both.
+            unsigned int n = (unsigned int)s;
+            while (n % 10 == 0 && d >= 10) {
+                n /= 10;
+                d /= 10;
+            }
+            *numerator = n;
+            *denominator = d;
+            return;
+        }
+    }
+
+    // Shouldn't reach here because the denominator 1 should work
+    // above. But just in case.
+    *numerator = 0;
+    *denominator = 1;
+}
+
+static void ConvertDoubleToURational(double value, unsigned int *numerator,
+                                     unsigned int *denominator) {
+    float2urat(value, 0xFFFFFFFFU, numerator, denominator);
+}
+
+static void ConvertDoubleToSRational(double value, int *numerator,
+                                     int *denominator) {
+    int negative = 0;
+
+    if (value < 0) {
+        value = -value;
+        negative = 1;
+    }
+
+    unsigned int n, d;
+    float2urat(value, 0x7FFFFFFFU, &n, &d);
+    *numerator = (int)n;
+    *denominator = (int)d;
+    if (negative) {
+        *numerator = -*numerator;
+    }
+}
+
+//--------------------------------------------------------------------------
 // Process one of the nested EXIF directories.
 //--------------------------------------------------------------------------
 static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
@@ -689,17 +765,27 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
                 }
 
                 // Copy the comment
-                if (memcmp(ValuePtr, "ASCII",5) == 0){
-                    for (a=5;a<10;a++){
-                        int c;
-                        c = (ValuePtr)[a];
-                        if (c != '\0' && c != ' '){
-                            strncpy(ImageInfo.Comments, (char *)ValuePtr+a, 199);
-                            break;
+                {
+                    // We want to set copied comment length (msize) to be the
+                    // minimum of:
+                    // (1) The space still available in Exif
+                    // (2) The given comment length (ByteCount)
+                    // (3) MAX_COMMENT_SIZE - 1
+                    int msiz = ExifLength - (ValuePtr-OffsetBase);
+                    if (msiz > ByteCount) msiz = ByteCount;
+                    if (msiz > MAX_COMMENT_SIZE - 1) msiz = MAX_COMMENT_SIZE - 1;
+                    if (msiz > 5 && memcmp(ValuePtr, "ASCII", 5) == 0) {
+                        for (a = 5; a < 10 && a < msiz; a++) {
+                            int c = (ValuePtr)[a];
+                            if (c != '\0' && c != ' ') {
+                                strncpy(ImageInfo.Comments,
+                                        (char *)ValuePtr + a, msiz - a);
+                                break;
+                            }
                         }
+                    } else {
+                        strncpy(ImageInfo.Comments, (char *)ValuePtr, msiz);
                     }
-                }else{
-                    strncpy(ImageInfo.Comments, (char *)ValuePtr, MAX_COMMENT_SIZE-1);
                 }
                 break;
 
@@ -1097,6 +1183,9 @@ static void writeExifTagAndData(int tag,
     if (format == FMT_STRING && components == -1) {
         components = strlen((char*)value) + 1;                 // account for null terminator
         if (components & 1) ++components;               // no odd lengths
+    } else if (format == FMT_SSHORT && components == -1) {
+        // jhead only supports reading one SSHORT anyway
+        components = 1;
     }
     if (format == FMT_UNDEFINED && components == -1) {
         // check if this UNDEFINED format is actually ASCII (as it usually is)
@@ -1137,7 +1226,9 @@ static void writeExifTagAndData(int tag,
         Put32u(Buffer+(*DirIndex) + 8, value);   // Value
     } else {
         Put32u(Buffer+(*DirIndex) + 8, (*DataWriteIndex)-8);   // Pointer
-        char* curElement = strtok((char*)value, ",");
+        // Usually the separator is ',', but sometimes ':' is used, like
+        // TAG_GPS_TIMESTAMP.
+        char* curElement = strtok((char*)value, ",:");
         int i;
 
         // (components == -1) Need to handle lists with unknown length too
@@ -1147,23 +1238,33 @@ static void writeExifTagAndData(int tag,
 #endif
             // elements are separated by commas
             if (format == FMT_URATIONAL) {
+                unsigned int numerator;
+                unsigned int denominator;
                 char* separator = strchr(curElement, '/');
                 if (separator) {
-                    unsigned int numerator = atoi(curElement);
-                    unsigned int denominator = atoi(separator + 1);
-                    Put32u(Buffer+(*DataWriteIndex), numerator);
-                    Put32u(Buffer+(*DataWriteIndex) + 4, denominator);
-                    (*DataWriteIndex) += 8;
+                    numerator = atoi(curElement);
+                    denominator = atoi(separator + 1);
+                } else {
+                    double value = atof(curElement);
+                    ConvertDoubleToURational(value, &numerator, &denominator);
                 }
+                Put32u(Buffer+(*DataWriteIndex), numerator);
+                Put32u(Buffer+(*DataWriteIndex) + 4, denominator);
+                (*DataWriteIndex) += 8;
             } else if (format == FMT_SRATIONAL) {
+                int numerator;
+                int denominator;
                 char* separator = strchr(curElement, '/');
                 if (separator) {
                     int numerator = atoi(curElement);
                     int denominator = atoi(separator + 1);
-                    Put32u(Buffer+(*DataWriteIndex), numerator);
-                    Put32u(Buffer+(*DataWriteIndex) + 4, denominator);
-                    (*DataWriteIndex) += 8;
+                } else {
+                    double value = atof(curElement);
+                    ConvertDoubleToSRational(value, &numerator, &denominator);
                 }
+                Put32u(Buffer+(*DataWriteIndex), numerator);
+                Put32u(Buffer+(*DataWriteIndex) + 4, denominator);
+                (*DataWriteIndex) += 8;
             } else if ((components == -1) && ((format == FMT_USHORT) || (format == FMT_SSHORT))) {
                 // variable components need to go into data write area
                 value = atoi(curElement);
@@ -1174,7 +1275,7 @@ static void writeExifTagAndData(int tag,
                 value = atoi(curElement);
                 Put32u(Buffer+(*DirIndex) + 8, value);   // Value
             }
-            curElement = strtok(NULL, ",");
+            curElement = strtok(NULL, ",:");
         }
         if (components == -1) Put32u(componentsPosition, i); // update component # for unknowns
     }

@@ -20,8 +20,6 @@ LOCAL_PATH := $(my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE_TAGS := optional
-
 LOCAL_SRC_FILES:= \
 	exif.c \
 	gpsinfo.c \

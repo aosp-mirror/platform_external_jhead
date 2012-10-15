@@ -1256,8 +1256,8 @@ static void writeExifTagAndData(int tag,
                 int denominator;
                 char* separator = strchr(curElement, '/');
                 if (separator) {
-                    int numerator = atoi(curElement);
-                    int denominator = atoi(separator + 1);
+                    numerator = atoi(curElement);
+                    denominator = atoi(separator + 1);
                 } else {
                     double value = atof(curElement);
                     ConvertDoubleToSRational(value, &numerator, &denominator);

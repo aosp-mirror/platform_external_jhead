@@ -32,7 +32,8 @@ LOCAL_MODULE := libexif
 
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \
-	libutils
+	libutils \
+	liblog
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -55,6 +56,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libnativehelper \
 	libcutils \
 	libutils \
+	liblog \
 	libexif
 
 include $(BUILD_SHARED_LIBRARY)

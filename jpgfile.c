@@ -156,6 +156,7 @@ int ReadJpegSections (FILE * infile, ReadMode_t ReadMode)
 
 
         Sections[SectionsRead].Type = marker;
+        Sections[SectionsRead].Offset = ftell(infile);
   
         // Read the length of the section.
         lh = fgetc(infile);
@@ -221,6 +222,7 @@ int ReadJpegSections (FILE * infile, ReadMode_t ReadMode)
 
                     CheckSectionsAllocated();
                     Sections[SectionsRead].Data = Data;
+                    Sections[SectionsRead].Offset = cp;
                     Sections[SectionsRead].Size = size;
                     Sections[SectionsRead].Type = PSEUDO_IMAGE_MARKER;
                     SectionsRead ++;
@@ -351,6 +353,7 @@ int ReadJpegSectionsFromBuffer (unsigned char* buffer, unsigned int buffer_size,
         }
 
         Sections[SectionsRead].Type = marker;
+        Sections[SectionsRead].Offset = pos;
 
         // Read the length of the section.
         lh = buffer[pos++];
@@ -410,6 +413,7 @@ int ReadJpegSectionsFromBuffer (unsigned char* buffer, unsigned int buffer_size,
 
                     CheckSectionsAllocated();
                     Sections[SectionsRead].Data = Data;
+                    Sections[SectionsRead].Offset = pos;
                     Sections[SectionsRead].Size = size;
                     Sections[SectionsRead].Type = PSEUDO_IMAGE_MARKER;
                     SectionsRead ++;

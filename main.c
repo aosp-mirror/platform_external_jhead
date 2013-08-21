@@ -475,6 +475,35 @@ noThumbnail:
     return NULL;
 }
 
+static jlongArray getThumbnailRange(JNIEnv *env, jobject jobj, jstring jfilename) {
+    jlongArray resultArray = NULL;
+    const char* filename = (*env)->GetStringUTFChars(env, jfilename, NULL);
+    if (filename) {
+        loadExifInfo(filename, FALSE);
+        Section_t* ExifSection = FindSection(M_EXIF);
+        if (ExifSection == NULL || ImageInfo.ThumbnailSize == 0) {
+            goto done;
+        }
+
+        jlong result[2];
+        result[0] = ExifSection->Offset + ImageInfo.ThumbnailOffset + 8;
+        result[1] = ImageInfo.ThumbnailSize;
+
+        resultArray = (*env)->NewLongArray(env, 2);
+        if (resultArray == NULL) {
+            goto done;
+        }
+
+        (*env)->SetLongArrayRegion(env, resultArray, 0, 2, result);
+    }
+done:
+    if (filename) {
+        (*env)->ReleaseStringUTFChars(env, jfilename, filename);
+    }
+    DiscardData();
+    return resultArray;
+}
+
 static int attributeCount;      // keep track of how many attributes we've added
 
 // returns new buffer length
@@ -728,6 +757,7 @@ static JNINativeMethod methods[] = {
   {"appendThumbnailNative", "(Ljava/lang/String;Ljava/lang/String;)Z", (void*)appendThumbnail },
   {"commitChangesNative", "(Ljava/lang/String;)V", (void*)commitChanges },
   {"getThumbnailNative", "(Ljava/lang/String;)[B", (void*)getThumbnail },
+  {"getThumbnailRangeNative", "(Ljava/lang/String;)[J", (void*)getThumbnailRange },
 };
 
 /*

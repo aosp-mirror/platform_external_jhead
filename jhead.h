@@ -52,6 +52,7 @@ typedef unsigned char uchar;
 typedef struct {
     uchar *  Data;
     int      Type;
+    unsigned Offset;
     unsigned Size;
 }Section_t;
 

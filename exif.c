@@ -711,12 +711,37 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
                 strncpy(ImageInfo.CameraModel, (char *)ValuePtr, ByteCount < 39 ? ByteCount : 39);
                 break;
 
+            case TAG_SUBSEC_TIME:
+                strlcpy(ImageInfo.SubSecTime, (char *)ValuePtr, sizeof(ImageInfo.SubSecTime));
+                break;
+
+            case TAG_SUBSEC_TIME_ORIG:
+                strlcpy(ImageInfo.SubSecTimeOrig, (char *)ValuePtr,
+                        sizeof(ImageInfo.SubSecTimeOrig));
+                break;
+
+            case TAG_SUBSEC_TIME_DIG:
+                strlcpy(ImageInfo.SubSecTimeDig, (char *)ValuePtr,
+                        sizeof(ImageInfo.SubSecTimeDig));
+                break;
+
+            case TAG_DATETIME_DIGITIZED:
+                strlcpy(ImageInfo.DigitizedTime, (char *)ValuePtr,
+                        sizeof(ImageInfo.DigitizedTime));
+
+                if (ImageInfo.numDateTimeTags >= MAX_DATE_COPIES){
+                    ErrNonfatal("More than %d date fields!  This is nuts", MAX_DATE_COPIES, 0);
+                    break;
+                }
+                ImageInfo.DateTimeOffsets[ImageInfo.numDateTimeTags++] =
+                    (char *)ValuePtr - (char *)OffsetBase;
+                break;
+
             case TAG_DATETIME_ORIGINAL:
                 // If we get a DATETIME_ORIGINAL, we use that one.
                 strncpy(ImageInfo.DateTime, (char *)ValuePtr, 19);
                 // Fallthru...
 
-            case TAG_DATETIME_DIGITIZED:
             case TAG_DATETIME:
                 if (!isdigit(ImageInfo.DateTime[0])){
                     // If we don't already have a DATETIME_ORIGINAL, use whatever

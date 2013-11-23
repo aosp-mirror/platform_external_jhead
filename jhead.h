@@ -67,6 +67,12 @@ extern int DumpExifMap;
 // i.e.: 11 * 6 + 3(‘/’) + 2(’,’) + 1(\0) = 72
 #define MAX_BUF_SIZE    72
 
+// Sub second tag string length (including null termination character), with
+// nano-second precision. e.g. 0.123456789s is represented as a null terminated
+// string "123456789". Although it can be any length, it is limited to 9 digits
+// here as we limit the precision to nano-second.
+#define SUB_SEC_SIZE    10
+
 typedef struct {
     uint32_t num;
     uint32_t denom;
@@ -83,6 +89,13 @@ typedef struct {
     char  CameraMake   [32];
     char  CameraModel  [40];
     char  DateTime     [20];
+    char  DigitizedTime[20];
+    // Fractions of seconds for DateTime tag, with milisecond precision.
+    char  SubSecTime[SUB_SEC_SIZE];
+    // Fractions of seconds for DateTimeOriginal tag, with milisecond precision.
+    char  SubSecTimeOrig[SUB_SEC_SIZE];
+    // Fractions of seconds for DateTimeDigitized tag, with milisecond precision.
+    char  SubSecTimeDig[SUB_SEC_SIZE];
     int   Height, Width;
     int   Orientation;
     int   IsColor;

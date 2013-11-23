@@ -602,6 +602,23 @@ static jstring getAttributes(JNIEnv *env, jobject jobj, jstring jfilename)
         bufLen = addKeyValueString(&buf, bufLen, "DateTime", ImageInfo.DateTime);
         if (bufLen == 0) return NULL;
     }
+    if (ImageInfo.DigitizedTime[0]) {
+        bufLen = addKeyValueString(&buf, bufLen, "DateTimeDigitized", ImageInfo.DigitizedTime);
+        if (bufLen == 0) return NULL;
+    }
+    if (ImageInfo.SubSecTime[0]) {
+        bufLen = addKeyValueString(&buf, bufLen, "SubSecTime", ImageInfo.SubSecTime);
+        if (bufLen == 0) return NULL;
+    }
+    if (ImageInfo.SubSecTimeOrig[0]) {
+        bufLen = addKeyValueString(&buf, bufLen, "SubSecTimeOriginal", ImageInfo.SubSecTimeOrig);
+        if (bufLen == 0) return NULL;
+    }
+    if (ImageInfo.SubSecTimeDig[0]) {
+        bufLen = addKeyValueString(&buf, bufLen, "SubSecTimeDigitized", ImageInfo.SubSecTimeDig);
+        if (bufLen == 0) return NULL;
+    }
+
     bufLen = addKeyValueInt(&buf, bufLen, "ImageWidth", ImageInfo.Width);
     if (bufLen == 0) return NULL;
 

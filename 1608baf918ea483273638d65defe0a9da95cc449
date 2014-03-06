@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fcce5d4a_92731c28",
+        "filename": "exif.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 998,
+      "author": {
+        "id": 1000411
+      },
+      "writtenOn": "2014-03-06T02:09:50Z",
+      "side": 1,
+      "message": "Note that %p prints hexadecimal addresses, which %d prints decimal ones. Is this expected / valid here? (i.e. is the output processed by some other tools?)",
+      "revId": "1608baf918ea483273638d65defe0a9da95cc449",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

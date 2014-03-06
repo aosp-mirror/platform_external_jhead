@@ -16,6 +16,24 @@
       "revId": "1608baf918ea483273638d65defe0a9da95cc449",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1c7df19f_5dfa7de2",
+        "filename": "exif.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 998,
+      "author": {
+        "id": 1010103
+      },
+      "writtenOn": "2014-03-06T02:12:22Z",
+      "side": 1,
+      "message": "This is just debug info, it\u0027s not processed anywhere.",
+      "parentUuid": "fcce5d4a_92731c28",
+      "revId": "1608baf918ea483273638d65defe0a9da95cc449",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

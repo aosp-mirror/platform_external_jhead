@@ -1020,13 +1020,13 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
         unsigned Offset;
 
         if (DIR_ENTRY_ADDR(DirStart, NumDirEntries) + 4 <= OffsetBase+ExifLength){
-            printf("DirStart %d offset from dirstart %d", (int)DirStart, 2+12*NumDirEntries);
+            printf("DirStart %p offset from dirstart %d", DirStart, 2+12*NumDirEntries);
             Offset = Get32u(DirStart+2+12*NumDirEntries);
             if (Offset){
                 SubdirStart = OffsetBase + Offset;
                 if (SubdirStart > OffsetBase+ExifLength || SubdirStart < OffsetBase){
-                    printf("SubdirStart %d OffsetBase %d ExifLength %d Offset %d",
-                        (int)SubdirStart, (int)OffsetBase, ExifLength, Offset);
+                    printf("SubdirStart %p OffsetBase %p ExifLength %d Offset %d",
+                        SubdirStart, OffsetBase, ExifLength, Offset);
                     if (SubdirStart > OffsetBase && SubdirStart < OffsetBase+ExifLength+20){
                         // Jhead 1.3 or earlier would crop the whole directory!
                         // As Jhead produces this form of format incorrectness,

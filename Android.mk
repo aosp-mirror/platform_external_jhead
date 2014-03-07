@@ -28,7 +28,7 @@ LOCAL_SRC_FILES:= \
 	jpgfile.c \
 	makernote.c
 
-LOCAL_MODULE := libexif
+LOCAL_MODULE := libjhead
 
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \
@@ -50,14 +50,14 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES:= \
 	main.c
 
-LOCAL_MODULE := libexif_jni
+LOCAL_MODULE := libjhead_jni
 
 LOCAL_SHARED_LIBRARIES := \
 	libnativehelper \
 	libcutils \
 	libutils \
 	liblog \
-	libexif
+	libjhead
 
 include $(BUILD_SHARED_LIBRARY)
 

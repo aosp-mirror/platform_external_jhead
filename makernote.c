@@ -2,6 +2,7 @@
 // Parse some maker specific onformation.
 // (Very limited right now - add maker specific stuff to this module)
 //--------------------------------------------------------------------------
+#include <inttypes.h>
 #include "jhead.h"
 
 //--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ void ProcessCanonMakerNoteDir(unsigned char * DirStart, unsigned char * OffsetBa
         }
 
         if (DumpExifMap){
-            printf("Map: %05d-%05d: Directory (makernote)\n",DirStart-OffsetBase, DirEnd-OffsetBase);
+            printf("Map: %05" PRIdPTR "-%05" PRIdPTR ": Directory (makernote)\n",DirStart-OffsetBase, DirEnd-OffsetBase);
         }
     }
 

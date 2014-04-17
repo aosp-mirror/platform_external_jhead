@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45586f41_2f98aa60",
+        "filename": "makernote.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2014-04-17T23:56:59Z",
+      "side": 1,
+      "message": "this is a ptrdiff_t, not a size_t.",
+      "revId": "b0c8a3aba54eac7a9f52f4b76073fc7f7094b54a",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

@@ -16,6 +16,24 @@
       "revId": "17ccf2ac5286b93cd9cf958d8294caa8188f65e4",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e54ec381_eb3de54d",
+        "filename": "makernote.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1032276
+      },
+      "writtenOn": "2014-04-18T17:57:24Z",
+      "side": 1,
+      "message": "True, no specification states thus, all the architectures I could look through made them (independently, separate include paths) the same size. Switching to %t is required so that we do not smudge this boundary ...",
+      "parentUuid": "e54ec381_8b8d516e",
+      "revId": "17ccf2ac5286b93cd9cf958d8294caa8188f65e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
     }
   ]
 }

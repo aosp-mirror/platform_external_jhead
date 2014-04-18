@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e54ec381_8b8d516e",
+        "filename": "makernote.c",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002751
+      },
+      "writtenOn": "2014-04-18T17:42:14Z",
+      "side": 1,
+      "message": "I don\u0027t see anything that says ptrdiff_t and intptr_t have to be the same size, although it would be very strange.  C99 supports %td for ptrdiff_t, which seems more exact (and shorter).",
+      "revId": "17ccf2ac5286b93cd9cf958d8294caa8188f65e4",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

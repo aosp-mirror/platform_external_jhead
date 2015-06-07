@@ -1767,7 +1767,7 @@ void ShowImageInfo(int ShowFileInfo)
         printf("\n");
     }
     if (ImageInfo.ApertureFNumber){
-        printf("Aperture     : f/%3.1f\n",(double)ImageInfo.ApertureFNumber);
+        printf("Aperture     : f/%3.3f\n",(double)ImageInfo.ApertureFNumber);
     }
     if (ImageInfo.Distance){
         if (ImageInfo.Distance < 0){

@@ -450,7 +450,8 @@ static jbyteArray getThumbnail(JNIEnv *env, jobject jobj, jstring jfilename)
 #endif
             goto noThumbnail;
         }
-        uchar* thumbnailPointer = ExifSection->Data + ImageInfo.ThumbnailOffset + 8;
+        const jbyte* thumbnailPointer =
+                (const jbyte*) (ExifSection->Data + ImageInfo.ThumbnailOffset + 8);
 
         jbyteArray byteArray = (*env)->NewByteArray(env, ImageInfo.ThumbnailSize);
         if (byteArray == NULL) {

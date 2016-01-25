@@ -1748,7 +1748,7 @@ void ShowImageInfo(int ShowFileInfo)
 
     if (ImageInfo.DigitalZoomRatio > 1){
         // Digital zoom used.  Shame on you!
-        printf("Digital Zoom : %1.3fx\n", (double)ImageInfo.DigitalZoomRatio);
+        printf("Digital Zoom : %5.3fx\n", (double)ImageInfo.DigitalZoomRatio);
     }
 
     if (ImageInfo.CCDWidth){
@@ -1767,7 +1767,7 @@ void ShowImageInfo(int ShowFileInfo)
         printf("\n");
     }
     if (ImageInfo.ApertureFNumber){
-        printf("Aperture     : f/%3.3f\n",(double)ImageInfo.ApertureFNumber);
+        printf("Aperture     : f/%5.3f\n",(double)ImageInfo.ApertureFNumber);
     }
     if (ImageInfo.Distance){
         if (ImageInfo.Distance < 0){
@@ -1960,7 +1960,7 @@ void ShowConciseImageInfo(void)
         if (ImageInfo.ExposureTime <= 0.5){
             printf(" (1/%d)",(int)(0.5 + 1/ImageInfo.ExposureTime));
         }else{
-            printf(" (%1.1f)",ImageInfo.ExposureTime);
+            printf(" (%3.1f)",ImageInfo.ExposureTime);
         }
     }
 

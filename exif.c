@@ -1081,7 +1081,7 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
 //--------------------------------------------------------------------------
 void process_EXIF (unsigned char * ExifSection, unsigned int length)
 {
-    int FirstOffset;
+    unsigned FirstOffset;
 
     FocalplaneXRes = 0;
     FocalplaneUnits = 0;
@@ -1120,9 +1120,8 @@ void process_EXIF (unsigned char * ExifSection, unsigned int length)
     }
 
     FirstOffset = Get32u(ExifSection+12);
-    if (FirstOffset < 8 || FirstOffset > 16){
-        // Usually set to 8, but other values valid too.
-        ErrNonfatal("Suspicious offset of first IFD value",0,0);
+    if (FirstOffset < 8 || FirstOffset+8 >= length) {
+        ErrNonfatal("Invalid offset of first IFD value: %u", FirstOffset, 0);
         return;
     }
 

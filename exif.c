@@ -383,6 +383,85 @@ unsigned Get32u(void * Long)
 }
 
 //--------------------------------------------------------------------------
+// Convert a 64 bit signed value from file's native byte order
+//--------------------------------------------------------------------------
+long long Get64s(void * LLong)
+{
+    uchar * ValuePtr = (uchar *)LLong;
+    if (MotorolaOrder){
+        return  (((long long)ValuePtr[0]) << 56) | (((ullong)ValuePtr[1]) << 48)
+              | (((ullong)ValuePtr[2]) << 40 ) | (((ullong)ValuePtr[3]) << 32 )
+              | (((ullong)ValuePtr[4]) << 24 ) | (((ullong)ValuePtr[5]) << 16 )
+              | (((ullong)ValuePtr[6]) << 8 ) | (((ullong)ValuePtr[7]) << 0 );
+    }else{
+        return  (((long long)ValuePtr[7]) << 56) | (((ullong)ValuePtr[6]) << 48)
+              | (((ullong)ValuePtr[5]) << 40 ) | (((ullong)ValuePtr[4]) << 32 )
+              | (((ullong)ValuePtr[3]) << 24 ) | (((ullong)ValuePtr[2]) << 16 )
+              | (((ullong)ValuePtr[1]) << 8 ) | (((ullong)ValuePtr[0]) << 0 );
+    }
+}
+
+//--------------------------------------------------------------------------
+// Convert a 64 bit unsigned value to file's native byte order
+//--------------------------------------------------------------------------
+void Put64u(void * Value, unsigned long long PutValue)
+{
+    if (MotorolaOrder){
+        ((uchar *)Value)[0] = (uchar)(PutValue>>56);
+        ((uchar *)Value)[1] = (uchar)(PutValue>>48);
+        ((uchar *)Value)[2] = (uchar)(PutValue>>40);
+        ((uchar *)Value)[3] = (uchar)(PutValue>>32);
+        ((uchar *)Value)[4] = (uchar)(PutValue>>24);
+        ((uchar *)Value)[5] = (uchar)(PutValue>>16);
+        ((uchar *)Value)[6] = (uchar)(PutValue>>8);
+        ((uchar *)Value)[7] = (uchar)PutValue;
+    }else{
+        ((uchar *)Value)[0] = (uchar)PutValue;
+        ((uchar *)Value)[1] = (uchar)(PutValue>>8);
+        ((uchar *)Value)[2] = (uchar)(PutValue>>16);
+        ((uchar *)Value)[3] = (uchar)(PutValue>>24);
+        ((uchar *)Value)[4] = (uchar)(PutValue>>32);
+        ((uchar *)Value)[5] = (uchar)(PutValue>>40);
+        ((uchar *)Value)[6] = (uchar)(PutValue>>48);
+        ((uchar *)Value)[7] = (uchar)(PutValue>>56);
+    }
+}
+
+//--------------------------------------------------------------------------
+// Convert a 64 bit signed value from file's native byte order
+//--------------------------------------------------------------------------
+ullong Get64u(void * Llong)
+{
+    return (ullong)Get64s(Llong) & 0xffffffffffffffff;
+}
+
+//--------------------------------------------------------------------------
+// Convert a 64 bit double value from signed long long value
+//--------------------------------------------------------------------------
+double Get64d(void * Double)
+{
+    union {
+      double ret;
+      long long var;
+    }data;
+    data.var = Get64s(Double);
+    return data.ret;
+}
+
+//--------------------------------------------------------------------------
+// Convert a 32 bit float value from signed int value
+//--------------------------------------------------------------------------
+float Get32f(void * Float)
+{
+    union {
+      float ret;
+      int var;
+    }data;
+    data.var = Get32s(Float);
+    return data.ret;
+}
+
+//--------------------------------------------------------------------------
 // Display a number as one of its many formats
 //--------------------------------------------------------------------------
 void PrintFormatNumber(void * ValuePtr, int Format, int ByteCount)
@@ -403,8 +482,8 @@ void PrintFormatNumber(void * ValuePtr, int Format, int ByteCount)
                s = 8;
                break;
 
-            case FMT_SINGLE:    printf("%f",(double)*(float *)ValuePtr); s=8; break;
-            case FMT_DOUBLE:    printf("%f",*(double *)ValuePtr);        s=8; break;
+            case FMT_SINGLE:    printf("%f",Get32f(ValuePtr)); s=4; break;
+            case FMT_DOUBLE:    printf("%f",Get64d(ValuePtr));        s=8; break;
             default:
                 printf("Unknown format %d:", Format);
                 return;
@@ -452,8 +531,8 @@ double ConvertAnyFormat(void * ValuePtr, int Format)
         case FMT_SLONG:     Value = Get32s(ValuePtr);                break;
 
         // Not sure if this is correct (never seen float used in Exif format)
-        case FMT_SINGLE:    Value = (double)*(float *)ValuePtr;      break;
-        case FMT_DOUBLE:    Value = *(double *)ValuePtr;             break;
+        case FMT_SINGLE:    Value = Get32f(ValuePtr);      break;
+        case FMT_DOUBLE:    Value = Get64d(ValuePtr);             break;
 
         default:
             ErrNonfatal("Illegal format code %d",Format,0);

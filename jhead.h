@@ -30,6 +30,7 @@
 
 
 typedef unsigned char uchar;
+typedef unsigned long long ullong;
 
 #ifndef TRUE
     #define TRUE 1

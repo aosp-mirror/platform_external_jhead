@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "48560d47_8f11209f",
+        "filename": "exif.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 1060513
+      },
+      "writtenOn": "2016-04-27T16:32:45Z",
+      "side": 1,
+      "message": "You can probably remove this line",
+      "range": {
+        "startLine": 533,
+        "startChar": 8,
+        "endLine": 533,
+        "endChar": 77
+      },
+      "revId": "392145826f8629afb6311480735f6a8e63aa773e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

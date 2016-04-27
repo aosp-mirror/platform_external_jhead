@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "48560d47_6fee4c9d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1060513
+      },
+      "writtenOn": "2016-04-27T16:34:46Z",
+      "side": 1,
+      "message": "I thought this should be a rational instead of floating point?",
+      "range": {
+        "startLine": 9,
+        "startChar": 12,
+        "endLine": 9,
+        "endChar": 24
+      },
+      "revId": "392145826f8629afb6311480735f6a8e63aa773e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "48560d47_8f11209f",
         "filename": "exif.c",
         "patchSetId": 1

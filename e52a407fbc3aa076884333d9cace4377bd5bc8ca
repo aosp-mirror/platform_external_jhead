@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "08689501_c36db4f6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1103638
+      },
+      "writtenOn": "2016-04-28T12:14:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "08689501_8d876c1f",
+      "revId": "e52a407fbc3aa076884333d9cace4377bd5bc8ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "08689501_2d9f3871",
         "filename": "exif.c",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2016-04-28T07:45:57Z",
       "side": 1,
       "message": "Where Put64u() and Get64u() are used? If those are not used yet, what about removing them?",
+      "revId": "e52a407fbc3aa076884333d9cace4377bd5bc8ca",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08689501_4381a49e",
+        "filename": "exif.c",
+        "patchSetId": 3
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1103638
+      },
+      "writtenOn": "2016-04-28T12:14:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "08689501_2d9f3871",
       "revId": "e52a407fbc3aa076884333d9cace4377bd5bc8ca",
       "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
       "unresolved": false

@@ -25,6 +25,52 @@
     },
     {
       "key": {
+        "uuid": "08689501_b408b91e",
+        "filename": "exif.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1090538
+      },
+      "writtenOn": "2016-04-28T02:54:28Z",
+      "side": 1,
+      "message": "return  (((long long)ValuePtr[0]) \u003c\u003c 56) | (((ullong)ValuePtr[1]) \u003c\u003c 48)\n      | (((   ullong)ValuePtr[2]) \u003c\u003c 40) | (((ullong)ValuePtr[3]) \u003c\u003c 32)\n      | (((   ullong)ValuePtr[4]) \u003c\u003c 24) | (((ullong)ValuePtr[5]) \u003c\u003c 16)\n      | (((   ullong)ValuePtr[6]) \u003c\u003c 8 ) | (((ullong)ValuePtr[7]) \u003c\u003c 0 );",
+      "range": {
+        "startLine": 392,
+        "startChar": 0,
+        "endLine": 395,
+        "endChar": 78
+      },
+      "revId": "392145826f8629afb6311480735f6a8e63aa773e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08689501_94093d1f",
+        "filename": "exif.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 1090538
+      },
+      "writtenOn": "2016-04-28T02:54:28Z",
+      "side": 1,
+      "message": "return  (((long long)ValuePtr[7]) \u003c\u003c 56) | (((ullong)ValuePtr[6]) \u003c\u003c 48)\n      | (((   ullong)ValuePtr[5]) \u003c\u003c 40) | (((ullong)ValuePtr[4]) \u003c\u003c 32)\n      | (((   ullong)ValuePtr[3]) \u003c\u003c 24) | (((ullong)ValuePtr[2]) \u003c\u003c 16)\n      | (((   ullong)ValuePtr[1]) \u003c\u003c 8 ) | (((ullong)ValuePtr[0]) \u003c\u003c 0 );",
+      "range": {
+        "startLine": 397,
+        "startChar": 0,
+        "endLine": 400,
+        "endChar": 78
+      },
+      "revId": "392145826f8629afb6311480735f6a8e63aa773e",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "48560d47_8f11209f",
         "filename": "exif.c",
         "patchSetId": 1

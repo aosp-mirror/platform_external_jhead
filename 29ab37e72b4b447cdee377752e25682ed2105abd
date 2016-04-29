@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88e9e5fc_ee5696f5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1018419
+      },
+      "writtenOn": "2016-04-29T05:36:16Z",
+      "side": 1,
+      "message": "What does this number refer? Could you remove this line and add https://code.google.com/p/android/issues/detail?id\u003d207230 instead?",
+      "revId": "29ab37e72b4b447cdee377752e25682ed2105abd",
+      "serverId": "85c56323-6fa9-3386-8a01-6480fb634889",
+      "unresolved": false
+    }
+  ]
+}

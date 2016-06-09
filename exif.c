@@ -605,7 +605,7 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
 
 
     NumDirEntries = Get16u(DirStart);
-    #define DIR_ENTRY_ADDR(Start, Entry) (Start+2+12*(Entry))
+    #define DIR_ENTRY_ADDR(Start, Entry) ((Start)+2+12*(Entry))
 
     {
         unsigned char * DirEnd;

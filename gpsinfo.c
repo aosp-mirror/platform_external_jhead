@@ -128,7 +128,7 @@ void ProcessGpsInfo(unsigned char * DirStart, int ByteCountUnused, unsigned char
     int NumDirEntries;
 
     NumDirEntries = Get16u(DirStart);
-    #define DIR_ENTRY_ADDR(Start, Entry) (Start+2+12*(Entry))
+    #define DIR_ENTRY_ADDR(Start, Entry) ((Start)+2+12*(Entry))
 
     if (ShowTags){
         printf("(dir has %d entries)\n",NumDirEntries);

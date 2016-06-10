@@ -614,7 +614,7 @@ static void ProcessExifDir(unsigned char * DirStart, unsigned char * OffsetBase,
             unsigned OffsetVal;
             OffsetVal = Get32u(DirEntry+8);
             // If its bigger than 4 bytes, the dir entry contains an offset.
-            if (OffsetVal+ByteCount > ExifLength){
+            if (OffsetVal > UINT32_MAX - ByteCount || OffsetVal+ByteCount > ExifLength){
                 // Bogus pointer offset and / or bytecount value
                 ErrNonfatal("Illegal value pointer for tag %04x", Tag,0);
                 continue;
